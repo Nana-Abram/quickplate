@@ -3,12 +3,12 @@
 Work one phase at a time on its own branch, then stop for review. Tick boxes as you go. See `CLAUDE.md` for the definition of done.
 
 ## Phase 0: Repo bootstrap (`feat/phase-0-bootstrap`)
-- [ ] Create the monorepo layout from `CLAUDE.md` and `git init` with `main`
-- [ ] Root `.gitignore` (Flutter, Node, `.env`, `serviceAccountKey.json`, keystores)
-- [ ] `flutter create mobile --org com.abraham.quickplate --project-name quickplate --platforms android,ios` (confirm the org with the user first if `docs/MANUAL_SETUP.md` says otherwise)
-- [ ] Add dependencies from `CLAUDE.md`, set up `analysis_options.yaml` per `ARCHITECTURE.md`
-- [ ] Create the empty folder skeleton from `ARCHITECTURE.md` with a minimal running app
-- [ ] Root `README.md` stub, `docs/DECISIONS.md`, `.github/workflows/ci.yml` running `flutter analyze` and `flutter test`
+- [x] Create the monorepo layout from `CLAUDE.md` and `git init` with `main`
+- [x] Root `.gitignore` (Flutter, Node, `.env`, `serviceAccountKey.json`, keystores)
+- [x] `flutter create mobile --org com.abraham.quickplate --project-name quickplate --platforms android,ios` (confirm the org with the user first if `docs/MANUAL_SETUP.md` says otherwise)
+- [x] Add dependencies from `CLAUDE.md`, set up `analysis_options.yaml` per `ARCHITECTURE.md`
+- [x] Create the empty folder skeleton from `ARCHITECTURE.md` with a minimal running app
+- [x] Root `README.md` stub, `docs/DECISIONS.md`, `.github/workflows/ci.yml` running `flutter analyze` and `flutter test`
 **Done when:** the app launches to a placeholder screen, CI file exists, first commits are clean.
 
 ## Phase 1: Backend (`feat/phase-1-backend`)
