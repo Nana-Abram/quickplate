@@ -1,0 +1,25 @@
+# Secrets
+.env
+.env.*
+!.env.example
+serviceAccountKey.json
+*serviceAccount*.json
+*.jks
+*.keystore
+key.properties
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+*.iml
+.vscode/
+
+# Node
+node_modules/
+npm-debug.log*
+coverage/
+
+# Flutter / Dart (mobile/.gitignore covers the rest)
+.dart_tool/
+build/
