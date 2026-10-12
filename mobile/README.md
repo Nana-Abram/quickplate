@@ -19,6 +19,10 @@ flutter test
 flutter run
 ```
 
+## Release build
+
+Copy `android/key.properties.example` to `android/key.properties` (gitignored), point it at a keystore kept outside the repo, then run `flutter build apk --release`. Without `key.properties`, release builds are signed with the debug key. Full steps are in the [root README](../README.md#release-build).
+
 ## Troubleshooting
 
 - **Black screen on an emulator:** some emulator GPUs fail with Flutter's Impeller renderer. Run `flutter run --no-enable-impeller`, or set the AVD's graphics to "Hardware" in Android Studio's Device Manager.

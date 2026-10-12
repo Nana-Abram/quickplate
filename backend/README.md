@@ -61,6 +61,10 @@ Errors always look like `{ "error": { "code": "...", "message": "..." } }`, with
 
 Order status flow: `placed → accepted → preparing → on_the_way → delivered`, or `placed → cancelled`.
 
+## Deploying to Render
+
+[`render.yaml`](../render.yaml) describes a free Node web service rooted at `backend/`. In Render choose **New > Blueprint**, pick this repo, and paste the contents of `serviceAccountKey.json` into `FIREBASE_SERVICE_ACCOUNT_JSON` when asked. Render sets `PORT` itself. The free tier sleeps when idle, so the first request after a while takes about 30 seconds. Point the app's `API_BASE_URL` at `https://<service>.onrender.com/v1` for release builds.
+
 ## Tests
 
 ```sh
