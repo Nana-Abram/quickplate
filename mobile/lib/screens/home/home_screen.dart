@@ -33,6 +33,11 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('QuickPlate'),
         actions: [
+          IconButton(
+            tooltip: 'Your orders',
+            icon: const Icon(Icons.receipt_long_outlined),
+            onPressed: () => context.push(Routes.orders),
+          ),
           const CartIconButton(),
           IconButton(
             tooltip: 'Profile',

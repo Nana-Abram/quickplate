@@ -64,10 +64,10 @@ Work one phase at a time on its own branch, then stop for review. Tick boxes as 
 **Done when:** an order is created on the backend and appears in Firestore.
 
 ## Phase 7: Orders and tracking (`feat/phase-7-orders`)
-- [ ] `OrderStreamService`, `OrderTrackingProvider` with proper stream disposal
-- [ ] Tracking screen: `StatusTimeline` widget, ETA text, delivery address map, cancel button (only while `placed`), fallback to REST on stream error
-- [ ] Orders history with status chips, order detail screen
-- [ ] Hidden demo control (long-press the status header, debug builds only) calling `/advance`
+- [x] `OrderStreamService`, `OrderTrackingProvider` with proper stream disposal
+- [x] Tracking screen: `StatusTimeline` widget, ETA text, delivery address map, cancel button (only while `placed`), fallback to REST on stream error
+- [x] Orders history with status chips, order detail screen
+- [x] Hidden demo control (long-press the status header, debug builds only) calling `/advance`
 **Done when:** status changes made by the simulator show up live without refreshing.
 
 ## Phase 8: Push notifications (`feat/phase-8-push`)

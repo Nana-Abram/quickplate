@@ -13,6 +13,7 @@ import 'data/repositories/restaurant_repository.dart';
 import 'data/services/auth_service.dart';
 import 'data/services/location_service.dart';
 import 'data/services/order_api_service.dart';
+import 'data/services/order_stream_service.dart';
 import 'data/services/restaurant_api_service.dart';
 import 'providers/auth_provider.dart';
 import 'providers/cart_provider.dart';
@@ -45,9 +46,12 @@ class QuickPlateApp extends StatelessWidget {
           create: (c) => RestaurantApiService(c.read()),
         ),
         Provider<OrderApiService>(create: (c) => OrderApiService(c.read())),
+        Provider<OrderStreamService>(create: (_) => OrderStreamService()),
         Provider<LocationService>(create: (_) => LocationService()),
         Provider<AuthRepository>(create: (c) => AuthRepository(c.read())),
-        Provider<OrderRepository>(create: (c) => OrderRepository(c.read())),
+        Provider<OrderRepository>(
+          create: (c) => OrderRepository(c.read(), c.read()),
+        ),
         Provider<RestaurantRepository>(
           create: (c) => RestaurantRepository(c.read()),
         ),

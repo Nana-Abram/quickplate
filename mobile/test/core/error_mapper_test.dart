@@ -125,4 +125,17 @@ void main() {
       expect(error.message, isNot(contains('internal-error')));
     });
   });
+
+  group('mapFirebaseException', () {
+    AppException map(String code) => mapFirebaseException(
+      FirebaseException(plugin: 'cloud_firestore', code: code),
+    );
+
+    test('maps Firestore error codes', () {
+      expect(map('permission-denied'), isA<ForbiddenException>());
+      expect(map('unavailable'), isA<NetworkException>());
+      expect(map('not-found'), isA<NotFoundException>());
+      expect(map('something-new'), isA<UnknownException>());
+    });
+  });
 }

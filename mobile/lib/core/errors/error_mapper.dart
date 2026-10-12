@@ -37,6 +37,18 @@ AppException mapFirebaseAuthException(FirebaseAuthException error) {
   };
 }
 
+/// Firestore (and other non-auth Firebase) errors, e.g. from the live order
+/// listener.
+AppException mapFirebaseException(FirebaseException error) {
+  return switch (error.code) {
+    'permission-denied' => const ForbiddenException(),
+    'not-found' => const NotFoundException(),
+    'unavailable' || 'deadline-exceeded' => const NetworkException(),
+    'unauthenticated' => const UnauthorizedException(),
+    _ => const UnknownException(),
+  };
+}
+
 /// The single place where Dio errors become [AppException]s.
 AppException mapDioException(DioException error) {
   return switch (error.type) {

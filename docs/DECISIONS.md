@@ -48,3 +48,10 @@ One line per decision made where the spec was silent or ambiguous.
 - No distance check between restaurant and delivery address; the spec does not ask for one.
 - The chosen address and payment method are form state in the checkout screen; placing the order goes through `OrdersProvider`.
 - After a successful order the app navigates to `/orders/:id` first and then clears the cart, so checkout never flashes its empty state. Phase 6 shows a confirmation there; Phase 7 replaces it with live tracking.
+- `/orders/:id` is one screen for both live tracking and order detail; finished orders simply show a completed timeline.
+- `OrderStreamService` converts Firestore `Timestamp`s to ISO strings so a single `Order.fromJson` reads both REST and Firestore data.
+- Tracking loads the order over REST first, then listens to Firestore. If the listener errors, it switches to polling REST every 10 seconds and says live updates are paused.
+- Orders have no ETA field, so the arrival estimate is the order time plus the restaurant's `etaMinutes` (from the restaurant cache, or 40 minutes if not cached).
+- The order history reloads every time its screen opens, since statuses change in the background.
+- The map attribution is a small custom widget: flutter_map's built-in one overflowed narrow maps with large text.
+- The demo control (long-press on the tracking header) only exists in debug builds and needs `ENABLE_DEMO_ENDPOINTS=true` on the backend.

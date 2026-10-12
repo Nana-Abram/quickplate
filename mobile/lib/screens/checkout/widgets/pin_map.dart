@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../core/constants/map_config.dart';
+import '../../../widgets/map_attribution.dart';
 
 /// Map with a pin fixed at its centre. Dragging the map or tapping a spot
 /// moves the location under the pin.
@@ -43,7 +44,7 @@ class PinMap extends StatelessWidget {
               urlTemplate: MapConfig.tileUrl,
               userAgentPackageName: MapConfig.userAgentPackageName,
             ),
-            const SimpleAttributionWidget(source: Text(MapConfig.attribution)),
+            const MapAttribution(),
           ],
         ),
         IgnorePointer(

@@ -39,4 +39,35 @@ class OrderApiService {
       return Order.fromJson(response.data!);
     });
   }
+
+  /// The caller's most recent orders, newest first.
+  Future<List<Order>> fetchOrders() {
+    return guardApiCall(() async {
+      final response = await _dio.get<Map<String, dynamic>>(
+        ApiEndpoints.orders,
+      );
+      return (response.data!['items'] as List<dynamic>)
+          .map((json) => Order.fromJson(json as Map<String, dynamic>))
+          .toList(growable: false);
+    });
+  }
+
+  Future<Order> fetchOrder(String id) => _send('GET', ApiEndpoints.order(id));
+
+  Future<Order> cancel(String id) =>
+      _send('POST', ApiEndpoints.cancelOrder(id));
+
+  /// Demo endpoint: moves the order one status forward.
+  Future<Order> advance(String id) =>
+      _send('POST', ApiEndpoints.advanceOrder(id));
+
+  Future<Order> _send(String method, String path) {
+    return guardApiCall(() async {
+      final response = await _dio.request<Map<String, dynamic>>(
+        path,
+        options: Options(method: method),
+      );
+      return Order.fromJson(response.data!);
+    });
+  }
 }
