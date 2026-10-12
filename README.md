@@ -65,7 +65,12 @@ More detail: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and the decision log i
 
 ## Run it locally
 
-You need Flutter (stable), Android Studio or the Android SDK, Node 20+, and a free Firebase project.
+You need Flutter (stable), Android Studio or the Android SDK, Node 20+, and a free Firebase project, plus the Firebase CLIs:
+
+```sh
+npm i -g firebase-tools && firebase login
+dart pub global activate flutterfire_cli
+```
 
 1. **Firebase project.** Follow [docs/MANUAL_SETUP.md](docs/MANUAL_SETUP.md):
    - Create a project with Email/Password sign-in and a Firestore database.
