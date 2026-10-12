@@ -5,13 +5,14 @@ import helmet from 'helmet';
 import { errorHandler, notFoundHandler } from './middleware/error.js';
 import { rateLimit } from './middleware/rateLimit.js';
 import { healthRouter } from './routes/health.js';
+import { restaurantsRouter } from './routes/restaurants.js';
 import { consoleLogger } from './utils/logger.js';
 
 /**
  * Builds the Express app. Everything that touches the outside world is passed
  * in, so tests can run the real routes against in-memory fakes.
  */
-export function createApp({ config, logger = consoleLogger }) {
+export function createApp({ config, services, logger = consoleLogger }) {
   const app = express();
 
   app.disable('x-powered-by');
@@ -24,6 +25,7 @@ export function createApp({ config, logger = consoleLogger }) {
 
   const v1 = express.Router();
   v1.use(healthRouter());
+  v1.use(restaurantsRouter(services));
 
   app.use('/v1', v1);
   app.use(notFoundHandler);

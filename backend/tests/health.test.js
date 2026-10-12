@@ -1,13 +1,12 @@
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 
-import { createApp } from '../src/app.js';
-import { silentLogger } from '../src/utils/logger.js';
+import { buildTestApp } from './helpers/testApp.js';
 import { testConfig } from './helpers/testConfig.js';
 
 describe('app basics', () => {
   it('GET /v1/health returns ok', async () => {
-    const app = createApp({ config: testConfig(), logger: silentLogger });
+    const { app } = buildTestApp();
 
     const res = await request(app).get('/v1/health');
 
@@ -16,7 +15,7 @@ describe('app basics', () => {
   });
 
   it('unknown routes return the not_found error shape', async () => {
-    const app = createApp({ config: testConfig(), logger: silentLogger });
+    const { app } = buildTestApp();
 
     const res = await request(app).get('/v1/nope');
 
@@ -25,10 +24,7 @@ describe('app basics', () => {
   });
 
   it('rejects requests over the rate limit with 429', async () => {
-    const app = createApp({
-      config: testConfig({ RATE_LIMIT_PER_MINUTE: '2' }),
-      logger: silentLogger,
-    });
+    const { app } = buildTestApp({ env: { RATE_LIMIT_PER_MINUTE: '2' } });
 
     await request(app).get('/v1/health');
     await request(app).get('/v1/health');
