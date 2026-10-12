@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../core/constants/routes.dart';
 import '../../data/models/cart_item.dart';
 import '../../providers/cart_provider.dart';
+import '../../widgets/app_button.dart';
 import '../../widgets/empty_view.dart';
 import 'widgets/cart_line_tile.dart';
 import 'widgets/cart_summary.dart';
@@ -52,6 +53,15 @@ class CartScreen extends StatelessWidget {
             ),
         ],
       ),
+      bottomNavigationBar: items.isEmpty
+          ? null
+          : SafeArea(
+              minimum: const EdgeInsets.all(16),
+              child: AppButton(
+                label: 'Go to checkout',
+                onPressed: () => context.push(Routes.checkout),
+              ),
+            ),
       body: items.isEmpty
           ? EmptyView(
               icon: Icons.shopping_bag_outlined,

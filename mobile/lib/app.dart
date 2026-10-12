@@ -8,11 +8,15 @@ import 'core/network/dio_client.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'data/repositories/auth_repository.dart';
+import 'data/repositories/order_repository.dart';
 import 'data/repositories/restaurant_repository.dart';
 import 'data/services/auth_service.dart';
+import 'data/services/location_service.dart';
+import 'data/services/order_api_service.dart';
 import 'data/services/restaurant_api_service.dart';
 import 'providers/auth_provider.dart';
 import 'providers/cart_provider.dart';
+import 'providers/orders_provider.dart';
 import 'providers/restaurants_provider.dart';
 import 'providers/theme_provider.dart';
 
@@ -40,7 +44,10 @@ class QuickPlateApp extends StatelessWidget {
         Provider<RestaurantApiService>(
           create: (c) => RestaurantApiService(c.read()),
         ),
+        Provider<OrderApiService>(create: (c) => OrderApiService(c.read())),
+        Provider<LocationService>(create: (_) => LocationService()),
         Provider<AuthRepository>(create: (c) => AuthRepository(c.read())),
+        Provider<OrderRepository>(create: (c) => OrderRepository(c.read())),
         Provider<RestaurantRepository>(
           create: (c) => RestaurantRepository(c.read()),
         ),
@@ -50,6 +57,10 @@ class QuickPlateApp extends StatelessWidget {
         ChangeNotifierProvider(create: (c) => AuthProvider(c.read())),
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (c) => RestaurantsProvider(c.read())),
+        ChangeNotifierProxyProvider<AuthProvider, OrdersProvider>(
+          create: (c) => OrdersProvider(c.read()),
+          update: (_, auth, previous) => previous!..onAuthChanged(auth.user),
+        ),
       ],
       child: const _AppView(),
     );
