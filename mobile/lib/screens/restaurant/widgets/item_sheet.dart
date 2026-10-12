@@ -74,6 +74,9 @@ class _ItemSheetState extends State<ItemSheet> {
     Navigator.of(context).pop();
     messenger.showSnackBar(
       SnackBar(
+        // Snackbars with an action persist by default; this one is only a
+        // shortcut, so let it time out.
+        persist: false,
         content: Text(switch (result) {
           AddToCartResult.added => 'Added ${widget.item.name} to your cart.',
           AddToCartResult.cartFull => 'Your cart is full. Check out first.',

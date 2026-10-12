@@ -74,6 +74,11 @@ void main() {
     expect(cart.items.single.quantity, 2);
     expect(cart.items.single.notes, 'no pepper');
     expect(find.text('Added Jollof Rice to your cart.'), findsOneWidget);
+    expect(
+      tester.widget<SnackBar>(find.byType(SnackBar)).persist,
+      isFalse,
+      reason: 'the confirmation must time out on its own',
+    );
 
     await tester.tap(find.text('View cart'));
     await tester.pumpAndSettle();
