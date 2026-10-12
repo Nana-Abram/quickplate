@@ -1,8 +1,11 @@
 import 'package:go_router/go_router.dart';
 
 import '../../providers/auth_provider.dart';
+import '../../screens/auth/forgot_password_screen.dart';
 import '../../screens/auth/login_screen.dart';
+import '../../screens/auth/register_screen.dart';
 import '../../screens/home/home_screen.dart';
+import '../../screens/profile/profile_screen.dart';
 import '../../screens/splash/splash_screen.dart';
 import '../constants/routes.dart';
 
@@ -40,7 +43,13 @@ GoRouter createRouter(AuthProvider authProvider) {
     routes: [
       GoRoute(path: Routes.splash, builder: (_, _) => const SplashScreen()),
       GoRoute(path: Routes.login, builder: (_, _) => const LoginScreen()),
+      GoRoute(path: Routes.register, builder: (_, _) => const RegisterScreen()),
+      GoRoute(
+        path: Routes.forgotPassword,
+        builder: (_, _) => const ForgotPasswordScreen(),
+      ),
       GoRoute(path: Routes.home, builder: (_, _) => const HomeScreen()),
+      GoRoute(path: Routes.profile, builder: (_, _) => const ProfileScreen()),
     ],
   );
 }

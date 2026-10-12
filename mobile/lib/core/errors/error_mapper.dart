@@ -1,8 +1,41 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'app_exception.dart';
+
+/// Turns Firebase Auth error codes into messages a user can act on.
+AppException mapFirebaseAuthException(FirebaseAuthException error) {
+  return switch (error.code) {
+    // Recent SDKs report a wrong password or unknown email as
+    // invalid-credential, so both get the same deliberately vague message.
+    'invalid-credential' ||
+    'wrong-password' ||
+    'user-not-found' ||
+    'INVALID_LOGIN_CREDENTIALS' => const AuthException(
+      'Incorrect email or password.',
+    ),
+    'invalid-email' => const AuthException('That email address is not valid.'),
+    'user-disabled' => const AuthException(
+      'This account has been disabled. Please contact support.',
+    ),
+    'email-already-in-use' => const AuthException(
+      'An account already exists for that email. Try signing in instead.',
+    ),
+    'weak-password' => const AuthException(
+      'Choose a stronger password with at least 8 characters.',
+    ),
+    'too-many-requests' => const AuthException(
+      'Too many attempts. Please wait a few minutes and try again.',
+    ),
+    'operation-not-allowed' => const AuthException(
+      'Email sign-in is not available right now.',
+    ),
+    'network-request-failed' => const NetworkException(),
+    _ => const AuthException('Something went wrong. Please try again.'),
+  };
+}
 
 /// The single place where Dio errors become [AppException]s.
 AppException mapDioException(DioException error) {

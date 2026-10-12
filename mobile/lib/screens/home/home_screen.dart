@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/constants/routes.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/empty_view.dart';
 
@@ -10,23 +12,26 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final email = context.select<AuthProvider, String?>((p) => p.user?.email);
+    final greetingName = context.select<AuthProvider, String?>((p) {
+      final name = p.user?.displayName;
+      return name == null || name.isEmpty ? p.user?.email : name;
+    });
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('QuickPlate'),
         actions: [
           IconButton(
-            tooltip: 'Sign out',
-            icon: const Icon(Icons.logout),
-            onPressed: () => context.read<AuthProvider>().signOut(),
+            tooltip: 'Profile',
+            icon: const Icon(Icons.account_circle_outlined),
+            onPressed: () => context.push(Routes.profile),
           ),
         ],
       ),
       body: EmptyView(
         icon: Icons.restaurant_outlined,
         title: 'Restaurants are coming soon',
-        message: email == null ? null : 'Signed in as $email',
+        message: greetingName == null ? null : 'Signed in as $greetingName',
       ),
     );
   }

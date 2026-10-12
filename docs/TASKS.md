@@ -33,11 +33,11 @@ Work one phase at a time on its own branch, then stop for review. Tick boxes as 
 **Done when:** the app routes between splash and placeholder screens based on auth state.
 
 ## Phase 3: Auth (`feat/phase-3-auth`)
-- [ ] `AuthService`, `AuthRepository`, `AuthProvider`
-- [ ] Login, Register (name, email, password), Forgot password screens with validation
-- [ ] Friendly mapping of Firebase auth errors (wrong password, user not found, email in use, network)
-- [ ] Persistent session, sign-out from a temporary profile screen
-- [ ] Tests for `AuthProvider`
+- [x] `AuthService`, `AuthRepository`, `AuthProvider`
+- [x] Login, Register (name, email, password), Forgot password screens with validation
+- [x] Friendly mapping of Firebase auth errors (wrong password, user not found, email in use, network)
+- [x] Persistent session, sign-out from a temporary profile screen
+- [x] Tests for `AuthProvider`
 **Done when:** a user can register, sign out, sign in, reset a password, and relaunch while staying signed in.
 
 ## Phase 4: Browse (`feat/phase-4-browse`)

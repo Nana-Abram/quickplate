@@ -7,13 +7,12 @@ import 'package:provider/provider.dart';
 import 'package:quickplate/core/constants/routes.dart';
 import 'package:quickplate/core/router/app_router.dart';
 import 'package:quickplate/data/models/app_user.dart';
-import 'package:quickplate/data/repositories/auth_repository.dart';
 import 'package:quickplate/providers/auth_provider.dart';
 import 'package:quickplate/screens/auth/login_screen.dart';
 import 'package:quickplate/screens/home/home_screen.dart';
 import 'package:quickplate/screens/splash/splash_screen.dart';
 
-class MockAuthRepository extends Mock implements AuthRepository {}
+import '../helpers/mocks.dart';
 
 void main() {
   group('authRedirect', () {
@@ -57,8 +56,7 @@ void main() {
     final repository = MockAuthRepository();
     final authChanges = StreamController<AppUser?>();
     addTearDown(authChanges.close);
-    when(() => repository.authStateChanges())
-        .thenAnswer((_) => authChanges.stream);
+    when(() => repository.userChanges()).thenAnswer((_) => authChanges.stream);
     final authProvider = AuthProvider(repository);
     final router = createRouter(authProvider);
     addTearDown(router.dispose);

@@ -6,7 +6,27 @@ class AuthRepository {
 
   final AuthService _authService;
 
-  Stream<AppUser?> authStateChanges() => _authService.authStateChanges();
+  Stream<AppUser?> userChanges() => _authService.userChanges();
+
+  Future<void> signIn({required String email, required String password}) {
+    return _authService.signIn(email: email.trim(), password: password);
+  }
+
+  Future<void> register({
+    required String name,
+    required String email,
+    required String password,
+  }) {
+    return _authService.register(
+      name: name.trim(),
+      email: email.trim(),
+      password: password,
+    );
+  }
+
+  Future<void> sendPasswordReset(String email) {
+    return _authService.sendPasswordReset(email.trim());
+  }
 
   Future<void> signOut() => _authService.signOut();
 }
