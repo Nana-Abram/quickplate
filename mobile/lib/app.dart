@@ -12,6 +12,7 @@ import 'data/repositories/restaurant_repository.dart';
 import 'data/services/auth_service.dart';
 import 'data/services/restaurant_api_service.dart';
 import 'providers/auth_provider.dart';
+import 'providers/cart_provider.dart';
 import 'providers/restaurants_provider.dart';
 import 'providers/theme_provider.dart';
 
@@ -47,6 +48,7 @@ class QuickPlateApp extends StatelessWidget {
         // State
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (c) => AuthProvider(c.read())),
+        ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (c) => RestaurantsProvider(c.read())),
       ],
       child: const _AppView(),

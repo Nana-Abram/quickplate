@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../core/constants/routes.dart';
 import '../../providers/restaurants_provider.dart';
+import '../../widgets/cart_icon_button.dart';
 import 'widgets/category_chips.dart';
 import 'widgets/restaurant_list.dart';
 import 'widgets/restaurant_search_field.dart';
@@ -32,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('QuickPlate'),
         actions: [
+          const CartIconButton(),
           IconButton(
             tooltip: 'Profile',
             icon: const Icon(Icons.account_circle_outlined),
