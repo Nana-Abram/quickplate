@@ -1,5 +1,8 @@
 # QuickPlate
 
+[![Mobile](https://github.com/Nana-Abram/quickplate/actions/workflows/mobile.yml/badge.svg)](https://github.com/Nana-Abram/quickplate/actions/workflows/mobile.yml)
+[![Backend](https://github.com/Nana-Abram/quickplate/actions/workflows/backend.yml/badge.svg)](https://github.com/Nana-Abram/quickplate/actions/workflows/backend.yml)
+
 A food-delivery app built with Flutter and a small Node/Express backend: browse restaurants, build a cart, place an order and watch its status update live.
 
 > Work in progress. Full setup instructions, screenshots and architecture notes will land here as the project is built.
