@@ -1,3 +1,4 @@
+import '../../core/errors/app_exception.dart';
 import '../models/menu_category.dart';
 import '../models/paged_result.dart';
 import '../models/restaurant.dart';
@@ -12,18 +13,38 @@ class RestaurantRepository {
   // immediately while the menu loads.
   final Map<String, Restaurant> _byId = {};
 
+  // The last unfiltered first page, shown when the network is down.
+  PagedResult<Restaurant>? _lastFirstPage;
+
   Future<PagedResult<Restaurant>> getRestaurants({
     String? query,
     String? category,
     int? limit,
     String? cursor,
   }) async {
-    final page = await _api.fetchRestaurants(
-      query: query,
-      category: category,
-      limit: limit,
-      cursor: cursor,
-    );
+    final isFirstUnfilteredPage =
+        query == null && category == null && cursor == null;
+
+    final PagedResult<Restaurant> page;
+    try {
+      page = await _api.fetchRestaurants(
+        query: query,
+        category: category,
+        limit: limit,
+        cursor: cursor,
+      );
+    } on AppException catch (error) {
+      final offline =
+          error is NetworkException || error is RequestTimeoutException;
+      final cached = _lastFirstPage;
+      if (offline && isFirstUnfilteredPage && cached != null) {
+        // No cursor: further pages cannot be fetched offline.
+        return PagedResult(items: cached.items, fromCache: true);
+      }
+      rethrow;
+    }
+
+    if (isFirstUnfilteredPage) _lastFirstPage = page;
     for (final restaurant in page.items) {
       _byId[restaurant.id] = restaurant;
     }

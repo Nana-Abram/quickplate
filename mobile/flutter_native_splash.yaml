@@ -1,0 +1,15 @@
+# Generates the native launch screen: dart run flutter_native_splash:create
+# Colours match the app theme's surface so the hand-off to the Flutter
+# splash screen is seamless.
+flutter_native_splash:
+  color: "#FFF8F6"
+  color_dark: "#1A110E"
+  image: assets/branding/splash_logo.png
+  android_12:
+    color: "#FFF8F6"
+    color_dark: "#1A110E"
+    image: assets/branding/app_icon_foreground.png
+    icon_background_color: "#E85D04"
+    icon_background_color_dark: "#E85D04"
+  android: true
+  ios: true
