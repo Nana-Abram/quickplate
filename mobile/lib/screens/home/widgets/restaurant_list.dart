@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/constants/routes.dart';
+import '../../../data/models/restaurant.dart';
 import '../../../providers/restaurants_provider.dart';
 import '../../../providers/view_state.dart';
 import '../../../widgets/empty_view.dart';
@@ -74,9 +75,14 @@ class _PagedListState extends State<_PagedList> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<RestaurantsProvider>();
-    final restaurants = provider.restaurants;
-    final showFooter = provider.hasMore || provider.loadMoreError != null;
+    // Only the list and whether a footer exists matter here. The footer
+    // watches its own loading and error state, so fetching the next page
+    // does not rebuild every visible card.
+    final (restaurants, showFooter) = context
+        .select<RestaurantsProvider, (List<Restaurant>, bool)>(
+          (p) => (p.restaurants, p.hasMore || p.loadMoreError != null),
+        );
+    final provider = context.read<RestaurantsProvider>();
 
     return RefreshIndicator(
       onRefresh: provider.refresh,

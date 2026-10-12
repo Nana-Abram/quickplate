@@ -93,13 +93,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final cart = context.watch<CartProvider>();
+    // Rebuild only for what this screen shows, not every cart change.
+    final (isEmpty, restaurantName, itemCount, total) = context
+        .select<CartProvider, (bool, String?, int, int)>(
+          (c) => (c.isEmpty, c.restaurant?.name, c.itemCount, c.totalPesewas),
+        );
     final isPlacing = context.select<OrdersProvider, bool>(
       (p) => p.isPlacingOrder,
     );
     final text = Theme.of(context).textTheme;
 
-    if (cart.isEmpty) {
+    if (isEmpty) {
       return Scaffold(
         appBar: AppBar(title: const Text('Checkout')),
         body: EmptyView(
@@ -131,7 +135,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ),
           const SizedBox(height: 24),
           Text(
-            '${cart.restaurant?.name} · ${TextFormat.itemCount(cart.itemCount)}',
+            '$restaurantName · ${TextFormat.itemCount(itemCount)}',
             style: text.titleMedium,
           ),
           const SizedBox(height: 8),
@@ -150,7 +154,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           children: [
             const PlaceOrderError(),
             AppButton(
-              label: 'Place order · ${Money.format(cart.totalPesewas)}',
+              label: 'Place order · ${Money.format(total)}',
               isLoading: isPlacing,
               onPressed: _placeOrder,
             ),
