@@ -7,6 +7,7 @@ import '../../providers/view_state.dart';
 import '../../widgets/empty_view.dart';
 import '../../widgets/error_view.dart';
 import '../../widgets/shimmer_list.dart';
+import '../../widgets/view_cart_bar.dart';
 import 'widgets/menu_category_list.dart';
 import 'widgets/restaurant_sliver_app_bar.dart';
 
@@ -55,6 +56,7 @@ class RestaurantScreen extends StatelessWidget {
     return DefaultTabController(
       length: categories.length,
       child: Scaffold(
+        bottomNavigationBar: ViewCartBar(restaurantId: restaurant.id),
         body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
             // Lets each tab's list start below the pinned header.

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../data/models/menu_category.dart';
+import '../../../providers/menu_provider.dart';
+import 'item_sheet.dart';
 import 'menu_item_tile.dart';
 
 /// One tab of the menu. Must sit inside the restaurant screen's
@@ -24,8 +27,17 @@ class MenuCategoryList extends StatelessWidget {
           sliver: SliverList.separated(
             itemCount: category.items.length,
             separatorBuilder: (_, _) => const Divider(height: 1),
-            itemBuilder: (_, index) =>
-                MenuItemTile(item: category.items[index]),
+            itemBuilder: (context, index) {
+              final item = category.items[index];
+              return MenuItemTile(
+                item: item,
+                onTap: () => showItemSheet(
+                  context,
+                  restaurant: context.read<MenuProvider>().restaurant!,
+                  item: item,
+                ),
+              );
+            },
           ),
         ),
       ],
