@@ -16,10 +16,14 @@ class CartIconButton extends StatelessWidget {
     return IconButton(
       tooltip: count == 0 ? 'Cart' : 'Cart, $count items',
       onPressed: () => context.push(Routes.cart),
-      icon: Badge.count(
-        count: count,
-        isLabelVisible: count > 0,
-        child: const Icon(Icons.shopping_bag_outlined),
+      // The tooltip already says how many items; without this the badge's
+      // bare number replaces it for screen readers.
+      icon: ExcludeSemantics(
+        child: Badge.count(
+          count: count,
+          isLabelVisible: count > 0,
+          child: const Icon(Icons.shopping_bag_outlined),
+        ),
       ),
     );
   }
