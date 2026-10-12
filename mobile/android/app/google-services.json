@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "777364264736",
+    "project_id": "quickplate-d2881",
+    "storage_bucket": "quickplate-d2881.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777364264736:android:1acc5babeb65f924896945",
+        "android_client_info": {
+          "package_name": "com.abraham.quickplate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuiRg-tRGcqQqqFWbu_bLD7patjFAvrsA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

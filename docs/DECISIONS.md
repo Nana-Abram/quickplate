@@ -17,3 +17,11 @@ One line per decision made where the spec was silent or ambiguous.
 - FCM tokens are capped at 10 per user. Tokens are pruned only on `registration-token-not-registered` or `invalid-registration-token`, because `invalid-argument` can also mean a bad payload.
 - Backend tests inject in-memory fakes of Firestore, Auth and Messaging through `createApp`/`createServices` instead of mocking modules, so the real services and routes run under test.
 - The Firebase project id lives in `backend/.firebaserc`. It is not a secret.
+- Phase 2 builds the session part of `AuthProvider` (auth state stream, sign out) because routing depends on it. Phase 3 adds sign-in, registration and password reset.
+- An `AppUser` model keeps Firebase's `User` type inside the data layer.
+- `ThemeProvider` keeps the chosen theme in memory only: persisting it would need `shared_preferences`, which is not an approved dependency.
+- `AuthInterceptor` attaches the ID token to every request while signed in (public endpoints ignore it) instead of tagging protected routes. Retries after a 401 keep the refreshed token.
+- Only 409 `conflict` messages from the API are shown to users, because the backend writes them for people. Every other error uses the app's own message.
+- While the session is unknown the router parks on `/splash?from=<location>` and resumes that location after sign-in, so deep links from notifications survive a cold start.
+- `.env` is bundled as an asset, so CI copies `.env.example` to `.env` before building.
+- Debug builds allow cleartext HTTP to reach the local API; release builds do not.

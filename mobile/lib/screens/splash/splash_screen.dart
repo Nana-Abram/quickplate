@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
+/// Shown while Firebase restores the session. The router leaves it as soon
+/// as the auth state is known.
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
 
     return Scaffold(
       body: Center(
@@ -15,10 +17,12 @@ class SplashScreen extends StatelessWidget {
             Icon(
               Icons.delivery_dining,
               size: 72,
-              color: Theme.of(context).colorScheme.primary,
+              color: theme.colorScheme.primary,
             ),
             const SizedBox(height: 16),
-            Text('QuickPlate', style: textTheme.headlineMedium),
+            Text('QuickPlate', style: theme.textTheme.headlineMedium),
+            const SizedBox(height: 32),
+            const CircularProgressIndicator(),
           ],
         ),
       ),
