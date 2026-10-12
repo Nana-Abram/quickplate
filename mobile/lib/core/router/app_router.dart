@@ -1,11 +1,14 @@
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../../providers/auth_provider.dart';
+import '../../providers/menu_provider.dart';
 import '../../screens/auth/forgot_password_screen.dart';
 import '../../screens/auth/login_screen.dart';
 import '../../screens/auth/register_screen.dart';
 import '../../screens/home/home_screen.dart';
 import '../../screens/profile/profile_screen.dart';
+import '../../screens/restaurant/restaurant_screen.dart';
 import '../../screens/splash/splash_screen.dart';
 import '../constants/routes.dart';
 
@@ -50,6 +53,15 @@ GoRouter createRouter(AuthProvider authProvider) {
       ),
       GoRoute(path: Routes.home, builder: (_, _) => const HomeScreen()),
       GoRoute(path: Routes.profile, builder: (_, _) => const ProfileScreen()),
+      GoRoute(
+        path: Routes.restaurant,
+        // Screen-scoped: the menu provider is disposed with the screen.
+        builder: (_, state) => ChangeNotifierProvider(
+          create: (context) =>
+              MenuProvider(context.read(), state.pathParameters['id']!)..load(),
+          child: const RestaurantScreen(),
+        ),
+      ),
     ],
   );
 }
