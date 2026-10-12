@@ -84,9 +84,9 @@ Work one phase at a time on its own branch, then stop for review. Tick boxes as 
 - [x] Profile screen finished (name, saved addresses list, theme toggle, sign out)
 
 ## Phase 10: Tests and CI (`feat/phase-10-quality`)
-- [ ] Fill any gaps from the "Tests to include" list in `ARCHITECTURE.md`
-- [ ] CI runs analyze, format check and tests for mobile, and tests for backend, with status badges
-- [ ] Optional: a build job that uploads a release APK as a workflow artifact
+- [x] Fill any gaps from the "Tests to include" list in `ARCHITECTURE.md`
+- [x] CI runs analyze, format check and tests for mobile, and tests for backend, with status badges
+- [x] Optional: a build job that uploads a release APK as a workflow artifact
 
 ## Phase 11: Documentation and release (`feat/phase-11-release`)
 - [ ] Root `README.md`: one-line pitch, screenshots and demo GIF placeholders (the user will add real captures), features, tech stack, architecture diagram (Mermaid), setup steps, API summary, testing, performance notes, known limitations, roadmap

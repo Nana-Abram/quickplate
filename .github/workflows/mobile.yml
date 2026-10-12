@@ -1,0 +1,70 @@
+name: Mobile
+
+on:
+  push:
+    branches: [main]
+    paths: ['mobile/**', '.github/workflows/mobile.yml']
+  pull_request:
+    paths: ['mobile/**', '.github/workflows/mobile.yml']
+
+defaults:
+  run:
+    working-directory: mobile
+
+jobs:
+  check:
+    name: Analyze, format and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.47.5
+          cache: true
+
+      # .env is gitignored but bundled as an asset, so CI uses the example.
+      - run: cp .env.example .env
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: dart format --output=none --set-exit-if-changed lib test
+      - run: flutter test --coverage
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: mobile/coverage/lcov.info
+
+  apk:
+    name: Build release APK
+    needs: check
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.47.5
+          cache: true
+
+      # Without a signing key in CI the APK is signed with the debug key: fine
+      # for trying the app, not for the Play Store. API_BASE_URL comes from
+      # the repository variable of the same name when it is set.
+      - run: cp .env.example .env
+      - if: vars.API_BASE_URL != ''
+        run: sed -i "s|^API_BASE_URL=.*|API_BASE_URL=${{ vars.API_BASE_URL }}|" .env
+      - run: flutter pub get
+      - run: flutter build apk --release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: quickplate-release-apk
+          path: mobile/build/app/outputs/flutter-apk/app-release.apk

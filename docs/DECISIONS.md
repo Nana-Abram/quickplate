@@ -66,3 +66,5 @@ One line per decision made where the spec was silent or ambiguous.
 - The rebuild audit was done by reviewing every widget that watched a whole provider; two were narrowed with `select` (see README, Performance). Images are decoded at their drawn width.
 - Accessibility is checked by widget tests: Android tap-target size, labelled tap targets and text contrast (light and dark) on the main screens, plus layout at double text size.
 - The app icon and splash use the Material "delivery_dining" glyph on the brand orange, generated with `flutter_launcher_icons` and `flutter_native_splash`. The splash colours match the theme's surface colours so the hand-off to the Flutter splash is seamless.
+- CI is split into `mobile.yml` and `backend.yml` (path-filtered, one badge each). Mobile runs analyze, a format check and tests with coverage (uploaded as an artifact); backend runs `npm test` with no credentials thanks to the in-memory fakes.
+- On pushes to `main`, CI also builds a release APK and uploads it as an artifact. Without a signing key in CI it is signed with the debug key; its API URL comes from the `API_BASE_URL` repository variable when set.
