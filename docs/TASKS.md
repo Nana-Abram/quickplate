@@ -77,11 +77,11 @@ Work one phase at a time on its own branch, then stop for review. Tick boxes as 
 **Done when:** a status change triggers a notification on a real device and tapping it opens the order.
 
 ## Phase 9: Polish and performance (`feat/phase-9-polish`)
-- [ ] Rebuild audit with Flutter DevTools. Scope `Consumer` and `Selector` widgets, add `const` where missing, and note two concrete improvements in the README under "Performance".
-- [ ] Offline and slow-network behaviour: timeouts, retry button, in-memory cache of the last restaurant page
-- [ ] Accessibility pass (semantic labels, tap targets, large text)
-- [ ] Dark mode check on every screen, app icon and splash via `flutter_launcher_icons` and `flutter_native_splash`
-- [ ] Profile screen finished (name, saved addresses list, theme toggle, sign out)
+- [x] Rebuild audit with Flutter DevTools. Scope `Consumer` and `Selector` widgets, add `const` where missing, and note two concrete improvements in the README under "Performance".
+- [x] Offline and slow-network behaviour: timeouts, retry button, in-memory cache of the last restaurant page
+- [x] Accessibility pass (semantic labels, tap targets, large text)
+- [x] Dark mode check on every screen, app icon and splash via `flutter_launcher_icons` and `flutter_native_splash`
+- [x] Profile screen finished (name, saved addresses list, theme toggle, sign out)
 
 ## Phase 10: Tests and CI (`feat/phase-10-quality`)
 - [ ] Fill any gaps from the "Tests to include" list in `ARCHITECTURE.md`
