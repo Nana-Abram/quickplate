@@ -129,8 +129,9 @@ class Query {
       const result = compare(getField(a.data, field), getField(b.data, field));
       if (result !== 0) return direction === 'desc' ? -result : result;
     }
-    // Firestore breaks ties by document id.
-    return compare(a.id, b.id);
+    // Firestore breaks ties by document id, in the direction of the last orderBy.
+    const byId = compare(a.id, b.id);
+    return this._orders.at(-1)?.direction === 'desc' ? -byId : byId;
   }
 
   async get() {
