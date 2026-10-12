@@ -31,19 +31,26 @@ class AppNetworkImage extends StatelessWidget {
       return SizedBox(width: width, height: height, child: fallback);
     }
 
+    final pixelRatio = MediaQuery.devicePixelRatioOf(context);
     return ExcludeSemantics(
-      child: CachedNetworkImage(
-        imageUrl: url,
-        width: width,
-        height: height,
-        fit: fit,
-        // Decode at display size rather than the full 600x400 source.
-        memCacheWidth: width == null
-            ? null
-            : (width! * MediaQuery.devicePixelRatioOf(context)).round(),
-        placeholder: (_, _) =>
-            ColoredBox(color: scheme.surfaceContainerHighest),
-        errorWidget: (_, _, _) => fallback,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          // Decode at the size actually drawn, not the full source size:
+          // less memory per image and faster first paint in long lists.
+          final drawnWidth = width ?? constraints.maxWidth;
+          return CachedNetworkImage(
+            imageUrl: url,
+            width: width,
+            height: height,
+            fit: fit,
+            memCacheWidth: drawnWidth.isFinite
+                ? (drawnWidth * pixelRatio).round()
+                : null,
+            placeholder: (_, _) =>
+                ColoredBox(color: scheme.surfaceContainerHighest),
+            errorWidget: (_, _, _) => fallback,
+          );
+        },
       ),
     );
   }
