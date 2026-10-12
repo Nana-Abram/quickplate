@@ -25,3 +25,8 @@ One line per decision made where the spec was silent or ambiguous.
 - While the session is unknown the router parks on `/splash?from=<location>` and resumes that location after sign-in, so deep links from notifications survive a cold start.
 - `.env` is bundled as an asset, so CI copies `.env.example` to `.env` before building.
 - Debug builds allow cleartext HTTP to reach the local API; release builds do not.
+- `AuthService` listens to Firebase `userChanges()` rather than `authStateChanges()`, so the display name set just after registration reaches the UI.
+- The display name lives in the Firebase Auth profile. Registration writes nothing to Firestore; the backend creates `users/{uid}` when the first device token arrives (Phase 8).
+- A wrong password and an unknown email share one message ("Incorrect email or password."), and the reset screen never says whether an account exists, so the app does not reveal which emails are registered.
+- New passwords need at least 8 characters (Firebase's minimum is 6). Sign-in accepts any non-empty password so older accounts still work.
+- `AuthProvider` keeps one `actionState` for all auth forms; each form clears it when it opens.
