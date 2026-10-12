@@ -52,10 +52,19 @@ export function createNotificationService({ db, messaging, logger }) {
         android: { priority: 'high' },
       });
 
-      const staleTokens = tokens.filter((_, index) => {
-        const result = response.responses[index];
-        return !result.success && STALE_TOKEN_CODES.has(result.error?.code);
-      });
+      const failures = response.responses
+        .map((result, index) => ({ ...result, token: tokens[index] }))
+        .filter((result) => !result.success);
+      if (failures.length === 0) return;
+
+      const codes = [...new Set(failures.map((failure) => failure.error?.code))].join(', ');
+      logger.warn(`Push for order ${order.id}: ${failures.length}/${tokens.length} failed (${codes}).`);
+
+      // Only prune on codes that are about the token itself. Others, such as
+      // invalid-argument, can also mean a bad payload and would wipe good tokens.
+      const staleTokens = failures
+        .filter((failure) => STALE_TOKEN_CODES.has(failure.error?.code))
+        .map((failure) => failure.token);
       if (staleTokens.length > 0) await removeTokens(order.userId, staleTokens);
     } catch (error) {
       logger.error(`Failed to send push for order ${order.id}`, error);

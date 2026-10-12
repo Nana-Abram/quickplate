@@ -11,7 +11,7 @@ const order = { id: 'o1', userId: 'ama', restaurantName: "Adwoa's Kitchen", stat
 async function setup({ tokens, staleTokens = [] } = {}) {
   const db = createFakeFirestore();
   const messaging = createFakeMessaging({ staleTokens });
-  const logger = { ...silentLogger, info: vi.fn(), error: vi.fn() };
+  const logger = { ...silentLogger, info: vi.fn(), warn: vi.fn(), error: vi.fn() };
   if (tokens) {
     await db.collection(COLLECTIONS.users).doc('ama').set({ fcmTokens: tokens });
   }
@@ -43,12 +43,16 @@ describe('notificationService', () => {
   });
 
   it('removes tokens FCM reports as no longer registered', async () => {
-    const { db, service } = await setup({ tokens: ['good', 'stale'], staleTokens: ['stale'] });
+    const { db, logger, service } = await setup({
+      tokens: ['good', 'stale'],
+      staleTokens: ['stale'],
+    });
 
     await service.notifyStatusChange(order);
 
     const user = await db.collection(COLLECTIONS.users).doc('ama').get();
     expect(user.data().fcmTokens).toEqual(['good']);
+    expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('1/2 failed'));
   });
 
   it('never throws when sending fails', async () => {
