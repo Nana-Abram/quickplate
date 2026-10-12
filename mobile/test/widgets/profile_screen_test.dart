@@ -36,7 +36,7 @@ void main() {
     auth = MockAuthRepository();
     book = MockAddressBookRepository();
     userChanges = StreamController<AppUser?>();
-    theme = ThemeProvider();
+    theme = ThemeProvider(FakeSettingsRepository());
     when(() => auth.userChanges()).thenAnswer((_) => userChanges.stream);
     when(() => book.save(any(), any())).thenAnswer((_) async {});
   });

@@ -12,6 +12,7 @@ import 'data/repositories/auth_repository.dart';
 import 'data/repositories/notification_repository.dart';
 import 'data/repositories/order_repository.dart';
 import 'data/repositories/restaurant_repository.dart';
+import 'data/repositories/settings_repository.dart';
 import 'data/services/address_book_service.dart';
 import 'data/services/auth_service.dart';
 import 'data/services/device_api_service.dart';
@@ -32,9 +33,16 @@ import 'widgets/push_message_handler.dart';
 /// Creates the app's object graph once: infrastructure first, then the
 /// providers that depend on it.
 class QuickPlateApp extends StatelessWidget {
-  const QuickPlateApp({super.key, required this.config});
+  const QuickPlateApp({
+    super.key,
+    required this.config,
+    required this.settings,
+    this.initialThemeMode = ThemeMode.system,
+  });
 
   final AppConfig config;
+  final SettingsRepository settings;
+  final ThemeMode initialThemeMode;
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +82,9 @@ class QuickPlateApp extends StatelessWidget {
         ),
 
         // State
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(
+          create: (_) => ThemeProvider(settings, initialMode: initialThemeMode),
+        ),
         ChangeNotifierProvider(create: (c) => AuthProvider(c.read())),
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (c) => RestaurantsProvider(c.read())),

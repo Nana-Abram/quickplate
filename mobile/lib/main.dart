@@ -4,6 +4,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'app.dart';
 import 'core/config/app_config.dart';
+import 'data/repositories/settings_repository.dart';
+import 'data/services/preferences_service.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -13,5 +15,15 @@ Future<void> main() async {
   final config = AppConfig.fromEnv(dotenv.env);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  runApp(QuickPlateApp(config: config));
+  // Read before the first frame so the app opens in the saved theme.
+  final settings = SettingsRepository(PreferencesService());
+  final themeMode = await settings.loadThemeMode();
+
+  runApp(
+    QuickPlateApp(
+      config: config,
+      settings: settings,
+      initialThemeMode: themeMode,
+    ),
+  );
 }

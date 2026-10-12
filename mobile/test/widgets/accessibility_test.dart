@@ -85,7 +85,9 @@ void main() {
           ChangeNotifierProvider(create: (_) => AuthProvider(auth)),
           ChangeNotifierProvider.value(value: cart),
           ChangeNotifierProvider.value(value: restaurantsProvider),
-          ChangeNotifierProvider(create: (_) => ThemeProvider()),
+          ChangeNotifierProvider(
+            create: (_) => ThemeProvider(FakeSettingsRepository()),
+          ),
           ChangeNotifierProvider.value(value: addressBook),
         ],
         child: MaterialApp(

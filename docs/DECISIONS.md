@@ -85,6 +85,6 @@ Choices made where the spec was silent or ambiguous, one line each, grouped by a
 
 ## Polish
 
-- The theme choice is kept in memory only. Saving it on the device needs `shared_preferences`, which is not on the approved dependency list.
+- The theme choice is saved on the device with `shared_preferences` (approved for this after Phase 11) and read in `main` before the first frame, so the app never flashes the wrong theme. A missing or unreadable value falls back to the system theme.
 - The rebuild audit reviewed every widget that watched a whole provider; two were narrowed with `select`. Images are decoded at their drawn width. See the README's Performance section.
 - Accessibility is checked by widget tests: tap-target size, labelled tap targets and text contrast (light and dark) on the main screens, plus layout at double text size.
