@@ -1,0 +1,32 @@
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+
+import 'auth_interceptor.dart';
+
+Dio buildDio({required String baseUrl, required IdTokenProvider getIdToken}) {
+  final dio = Dio(
+    BaseOptions(
+      baseUrl: baseUrl,
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 15),
+      contentType: Headers.jsonContentType,
+      responseType: ResponseType.json,
+    ),
+  );
+
+  dio.interceptors.add(AuthInterceptor(getIdToken: getIdToken, dio: dio));
+
+  if (kDebugMode) {
+    dio.interceptors.add(
+      LogInterceptor(
+        // Headers carry the ID token, so they are never logged.
+        requestHeader: false,
+        responseHeader: false,
+        requestBody: true,
+        logPrint: (line) => debugPrint(line.toString()),
+      ),
+    );
+  }
+
+  return dio;
+}
