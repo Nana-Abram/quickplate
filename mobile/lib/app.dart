@@ -8,8 +8,11 @@ import 'core/network/dio_client.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'data/repositories/auth_repository.dart';
+import 'data/repositories/restaurant_repository.dart';
 import 'data/services/auth_service.dart';
+import 'data/services/restaurant_api_service.dart';
 import 'providers/auth_provider.dart';
+import 'providers/restaurants_provider.dart';
 import 'providers/theme_provider.dart';
 
 /// Creates the app's object graph once: infrastructure first, then the
@@ -33,11 +36,18 @@ class QuickPlateApp extends StatelessWidget {
           ),
           dispose: (_, dio) => dio.close(),
         ),
+        Provider<RestaurantApiService>(
+          create: (c) => RestaurantApiService(c.read()),
+        ),
         Provider<AuthRepository>(create: (c) => AuthRepository(c.read())),
+        Provider<RestaurantRepository>(
+          create: (c) => RestaurantRepository(c.read()),
+        ),
 
         // State
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (c) => AuthProvider(c.read())),
+        ChangeNotifierProvider(create: (c) => RestaurantsProvider(c.read())),
       ],
       child: const _AppView(),
     );

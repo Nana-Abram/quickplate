@@ -41,11 +41,11 @@ Work one phase at a time on its own branch, then stop for review. Tick boxes as 
 **Done when:** a user can register, sign out, sign in, reset a password, and relaunch while staying signed in.
 
 ## Phase 4: Browse (`feat/phase-4-browse`)
-- [ ] Models, `RestaurantApiService`, `RestaurantRepository`, `RestaurantsProvider`
-- [ ] Home: debounced search (400 ms), category chips, infinite scroll, pull-to-refresh, shimmer, empty and error views
-- [ ] `RestaurantCard` with cached image, rating, ETA, delivery fee, closed badge
-- [ ] Restaurant detail with `MenuProvider`, category tabs, item rows
-- [ ] Tests for `RestaurantsProvider` and a `RestaurantCard` widget test
+- [x] Models, `RestaurantApiService`, `RestaurantRepository`, `RestaurantsProvider`
+- [x] Home: debounced search (400 ms), category chips, infinite scroll, pull-to-refresh, shimmer, empty and error views
+- [x] `RestaurantCard` with cached image, rating, ETA, delivery fee, closed badge
+- [x] Restaurant detail with `MenuProvider`, category tabs, item rows
+- [x] Tests for `RestaurantsProvider` and a `RestaurantCard` widget test
 **Done when:** browsing, searching and filtering work against the live backend, with all five states visible.
 
 ## Phase 5: Cart (`feat/phase-5-cart`)

@@ -3,20 +3,31 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/constants/routes.dart';
-import '../../providers/auth_provider.dart';
-import '../../widgets/empty_view.dart';
+import '../../providers/restaurants_provider.dart';
+import 'widgets/category_chips.dart';
+import 'widgets/restaurant_list.dart';
+import 'widgets/restaurant_search_field.dart';
 
-/// Placeholder until the restaurant list is built in Phase 4.
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final greetingName = context.select<AuthProvider, String?>((p) {
-      final name = p.user?.displayName;
-      return name == null || name.isEmpty ? p.user?.email : name;
-    });
+  State<HomeScreen> createState() => _HomeScreenState();
+}
 
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Deferred: the first load notifies listeners, which is not allowed
+    // while this screen is still building.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) context.read<RestaurantsProvider>().loadInitial();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('QuickPlate'),
@@ -28,10 +39,15 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: EmptyView(
-        icon: Icons.restaurant_outlined,
-        title: 'Restaurants are coming soon',
-        message: greetingName == null ? null : 'Signed in as $greetingName',
+      body: const Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(16, 8, 16, 4),
+            child: RestaurantSearchField(),
+          ),
+          CategoryChips(),
+          Expanded(child: RestaurantList()),
+        ],
       ),
     );
   }

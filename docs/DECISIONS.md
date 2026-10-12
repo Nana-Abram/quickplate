@@ -30,3 +30,10 @@ One line per decision made where the spec was silent or ambiguous.
 - A wrong password and an unknown email share one message ("Incorrect email or password."), and the reset screen never says whether an account exists, so the app does not reveal which emails are registered.
 - New passwords need at least 8 characters (Firebase's minimum is 6). Sign-in accepts any non-empty password so older accounts still work.
 - `AuthProvider` keeps one `actionState` for all auth forms; each form clears it when it opens.
+- Home category chips come from a constant list that matches the seeded categories, because the API has no categories endpoint.
+- The search debounce (400 ms) lives in `RestaurantsProvider`, not the widget, so it is unit tested. A generation counter discards responses for an older search or filter.
+- `RestaurantRepository` remembers restaurants from list pages so the detail header draws instantly. The menu is always fetched fresh.
+- Restaurant detail uses one tab per menu category (`NestedScrollView` + `TabBarView`) for sticky tabs, instead of one long list with scroll-synced tabs. It is simpler and keeps each tab's scroll position.
+- `Restaurant` flattens `location` into `latitude`/`longitude`; `toJson` rebuilds the API shape.
+- Money shows as `GH₵45.50`; a 0 delivery fee shows as "Free".
+- The 8 seeded restaurants fit in one page of 10, so infinite scroll is covered by provider tests rather than visible with the seed data.

@@ -7,7 +7,10 @@ import 'package:provider/provider.dart';
 import 'package:quickplate/core/constants/routes.dart';
 import 'package:quickplate/core/router/app_router.dart';
 import 'package:quickplate/data/models/app_user.dart';
+import 'package:quickplate/data/models/paged_result.dart';
+import 'package:quickplate/data/models/restaurant.dart';
 import 'package:quickplate/providers/auth_provider.dart';
+import 'package:quickplate/providers/restaurants_provider.dart';
 import 'package:quickplate/screens/auth/login_screen.dart';
 import 'package:quickplate/screens/home/home_screen.dart';
 import 'package:quickplate/screens/splash/splash_screen.dart';
@@ -61,9 +64,24 @@ void main() {
     final router = createRouter(authProvider);
     addTearDown(router.dispose);
 
+    final restaurants = MockRestaurantRepository();
+    when(
+      () => restaurants.getRestaurants(
+        query: any(named: 'query'),
+        category: any(named: 'category'),
+        limit: any(named: 'limit'),
+        cursor: any(named: 'cursor'),
+      ),
+    ).thenAnswer((_) async => const PagedResult<Restaurant>(items: []));
+
     await tester.pumpWidget(
-      ChangeNotifierProvider.value(
-        value: authProvider,
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: authProvider),
+          ChangeNotifierProvider(
+            create: (_) => RestaurantsProvider(restaurants),
+          ),
+        ],
         child: MaterialApp.router(routerConfig: router),
       ),
     );
@@ -76,7 +94,6 @@ void main() {
     authChanges.add(const AppUser(uid: 'u1', email: 'ama@example.com'));
     await tester.pumpAndSettle();
     expect(find.byType(HomeScreen), findsOneWidget);
-    expect(find.text('Signed in as ama@example.com'), findsOneWidget);
 
     authChanges.add(null);
     await tester.pumpAndSettle();
