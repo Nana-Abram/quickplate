@@ -25,11 +25,11 @@ Work one phase at a time on its own branch, then stop for review. Tick boxes as 
 **Done when:** `npm test` passes and every endpoint in `SPEC.md` works against the real Firebase project (needs `docs/MANUAL_SETUP.md` steps 1 to 4, ask the user if missing).
 
 ## Phase 2: App foundation (`feat/phase-2-foundation`)
-- [ ] Theme (light and dark, Material 3, one brand colour), `ThemeProvider`
-- [ ] Constants, `AppException` hierarchy, `error_mapper`, Dio client and auth interceptor
-- [ ] Shared widgets: `AppButton`, `AppTextField`, `ErrorView`, `EmptyView`, `ShimmerList`
-- [ ] `ViewState` enum, `go_router` with auth redirect, `MultiProvider` wiring
-- [ ] Firebase init via `firebase_options.dart` (from `flutterfire configure`, step 5 in `MANUAL_SETUP.md`)
+- [x] Theme (light and dark, Material 3, one brand colour), `ThemeProvider`
+- [x] Constants, `AppException` hierarchy, `error_mapper`, Dio client and auth interceptor
+- [x] Shared widgets: `AppButton`, `AppTextField`, `ErrorView`, `EmptyView`, `ShimmerList`
+- [x] `ViewState` enum, `go_router` with auth redirect, `MultiProvider` wiring
+- [x] Firebase init via `firebase_options.dart` (from `flutterfire configure`, step 5 in `MANUAL_SETUP.md`)
 **Done when:** the app routes between splash and placeholder screens based on auth state.
 
 ## Phase 3: Auth (`feat/phase-3-auth`)
