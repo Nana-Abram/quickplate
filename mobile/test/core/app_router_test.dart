@@ -10,6 +10,7 @@ import 'package:quickplate/data/models/app_user.dart';
 import 'package:quickplate/data/models/paged_result.dart';
 import 'package:quickplate/data/models/restaurant.dart';
 import 'package:quickplate/providers/auth_provider.dart';
+import 'package:quickplate/providers/cart_provider.dart';
 import 'package:quickplate/providers/restaurants_provider.dart';
 import 'package:quickplate/screens/auth/login_screen.dart';
 import 'package:quickplate/screens/home/home_screen.dart';
@@ -78,6 +79,7 @@ void main() {
       MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: authProvider),
+          ChangeNotifierProvider(create: (_) => CartProvider()),
           ChangeNotifierProvider(
             create: (_) => RestaurantsProvider(restaurants),
           ),

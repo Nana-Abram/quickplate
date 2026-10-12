@@ -6,6 +6,7 @@ import '../../providers/menu_provider.dart';
 import '../../screens/auth/forgot_password_screen.dart';
 import '../../screens/auth/login_screen.dart';
 import '../../screens/auth/register_screen.dart';
+import '../../screens/cart/cart_screen.dart';
 import '../../screens/home/home_screen.dart';
 import '../../screens/profile/profile_screen.dart';
 import '../../screens/restaurant/restaurant_screen.dart';
@@ -53,6 +54,7 @@ GoRouter createRouter(AuthProvider authProvider) {
       ),
       GoRoute(path: Routes.home, builder: (_, _) => const HomeScreen()),
       GoRoute(path: Routes.profile, builder: (_, _) => const ProfileScreen()),
+      GoRoute(path: Routes.cart, builder: (_, _) => const CartScreen()),
       GoRoute(
         path: Routes.restaurant,
         // Screen-scoped: the menu provider is disposed with the screen.
