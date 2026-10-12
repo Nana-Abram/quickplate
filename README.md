@@ -22,7 +22,7 @@ _Demo GIF coming soon._
 - **Checkout:** OpenStreetMap address picker with "use my location", saved addresses, and cash or demo card payment. The server, not the app, sets every price.
 - **Live tracking:** a status timeline pushed from Firestore, arrival estimate, delivery map, and cancel while the restaurant has not accepted. It falls back to polling if the live connection fails.
 - **Push notifications:** FCM on every status change. A tap opens the order, even from a cold start.
-- **Order history, profile and themes:** status chips, saved addresses, and a light/dark/system theme.
+- **Order history, profile and themes:** status chips, saved addresses, and a light/dark/system theme that is remembered between launches.
 - **Every data screen** has loading (shimmer), empty, error (with retry) and success states.
 
 ## Tech stack
@@ -32,9 +32,9 @@ _Demo GIF coming soon._
 | App | Flutter (Dart 3), **Provider** (`ChangeNotifier`), go_router, Dio |
 | Firebase | Auth, Cloud Firestore (live order updates), Cloud Messaging |
 | Maps | flutter_map + OpenStreetMap tiles, geolocator (no API key) |
-| UI | Material 3 light/dark theme, cached_network_image, shimmer |
+| UI | Material 3 light/dark theme, cached_network_image, shimmer, shared_preferences |
 | Backend | Node 22, Express 5, firebase-admin, zod validation, helmet, cors |
-| Tests | flutter_test + mocktail (180 tests), vitest + supertest (51 tests) |
+| Tests | flutter_test + mocktail (185 tests), vitest + supertest (51 tests) |
 | CI | GitHub Actions: analyze, format check, tests, release APK artifact |
 
 ## Architecture
@@ -150,14 +150,14 @@ To check rebuilds yourself, run `flutter run --profile` and open the Flutter Dev
 
 - **Simulated restaurant and rider:** status changes come from a timer, there are no real payments ("Card (demo)" charges nothing), and there are no restaurant or rider apps.
 - **Search** matches the start of restaurant names only, because Firestore has no full-text search.
-- **The cart** is kept in memory, and the theme choice is not yet saved between launches.
+- **The cart** is kept in memory and empties when Android closes the app.
 - **No reverse geocoding:** you type the street line and the map pin supplies the coordinates. There is no distance check between restaurant and address.
 - **Simulator restarts:** simulator timers live in the API process, so orders stop advancing if the server restarts mid-delivery (the demo endpoint can move them on).
 - **iOS** builds are configured but not tested.
 
 ## Roadmap
 
-- Persist the cart and theme on the device.
+- Persist the cart on the device.
 - Full-text restaurant search (Typesense or Algolia).
 - Real payments through a Ghanaian provider (mobile money).
 - Rider location on the tracking map.
