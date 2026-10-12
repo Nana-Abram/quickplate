@@ -87,4 +87,10 @@ Choices made where the spec was silent or ambiguous, one line each, grouped by a
 
 - The theme choice is saved on the device with `shared_preferences` (approved for this after Phase 11) and read in `main` before the first frame, so the app never flashes the wrong theme. A missing or unreadable value falls back to the system theme.
 - The rebuild audit reviewed every widget that watched a whole provider; two were narrowed with `select`. Images are decoded at their drawn width. See the README's Performance section.
+- The sample restaurants are invented, so no real business is shown with made-up prices or ratings. Dishes, neighbourhoods and prices follow 2025-26 Accra and Kumasi menus.
+- Food photos are openly licensed (CC0, CC BY, CC BY-SA) and loaded by URL from their hosts at about 1024 px, so the repo stays small. Each is credited in `docs/PHOTO_CREDITS.md`; only the sign-in hero is bundled.
+- Plus Jakarta Sans (SIL Open Font License) is bundled as asset files rather than fetched with `google_fonts`, which is not on the approved dependency list and would need a network call on first launch.
+- Kente colours are decoration only (the painted kente band, the rating star). Text sits on the brand gradient's darker end, where white passes WCAG AA.
+- The home header, categories and "Top rated" carousel are slivers in the restaurant list's scroll view. They stay mounted across loading, empty and error states, so the search field keeps its text and focus.
+- "Top rated" shows the five best-rated open restaurants from the first unfiltered page and is picked once per reload, so it does not reshuffle while more pages load.
 - Accessibility is checked by widget tests: tap-target size, labelled tap targets and text contrast (light and dark) on the main screens, plus layout at double text size.
