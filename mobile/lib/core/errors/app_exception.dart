@@ -69,6 +69,14 @@ class AuthException extends AppException {
   const AuthException(super.message);
 }
 
+/// Location could not be read: services off, permission refused, or no fix.
+class LocationException extends AppException {
+  const LocationException(super.message, {this.canOpenSettings = false});
+
+  /// True when only the system settings can grant access again.
+  final bool canOpenSettings;
+}
+
 class UnknownException extends AppException {
   const UnknownException([
     super.message = 'Something went wrong. Please try again.',
