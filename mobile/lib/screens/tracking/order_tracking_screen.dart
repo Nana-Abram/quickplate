@@ -31,7 +31,9 @@ class OrderTrackingScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Your order'),
         // Checkout replaces the stack with this screen, so offer a way home.
-        leading: context.canPop()
+        // isFirst looks at this page only; canPop would also count an open
+        // dialog and drop the button after the screen rebuilt under it.
+        leading: !(ModalRoute.of(context)?.isFirst ?? false)
             ? null
             : IconButton(
                 tooltip: 'Home',
