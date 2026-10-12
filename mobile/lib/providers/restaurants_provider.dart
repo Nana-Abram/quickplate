@@ -29,6 +29,7 @@ class RestaurantsProvider extends ChangeNotifier {
   String? _nextCursor;
   bool _isLoadingMore = false;
   String? _loadMoreError;
+  bool _showingCached = false;
 
   // Bumped on every reload so a slow response for an old search or filter
   // can never overwrite the results of a newer one.
@@ -43,6 +44,9 @@ class RestaurantsProvider extends ChangeNotifier {
   bool get hasMore => _nextCursor != null;
   bool get isLoadingMore => _isLoadingMore;
   String? get loadMoreError => _loadMoreError;
+
+  /// True when the network failed and the list shows earlier results.
+  bool get isShowingCached => _showingCached;
 
   /// Loads the first page once; later calls do nothing.
   Future<void> loadInitial() async {
@@ -117,6 +121,7 @@ class RestaurantsProvider extends ChangeNotifier {
       if (generation != _generation) return;
       _restaurants = page.items;
       _nextCursor = page.nextCursor;
+      _showingCached = page.fromCache;
       _errorMessage = null;
       _state = page.items.isEmpty ? ViewState.empty : ViewState.success;
     } on AppException catch (error) {

@@ -6,6 +6,7 @@ import '../../core/constants/routes.dart';
 import '../../providers/restaurants_provider.dart';
 import '../../widgets/cart_icon_button.dart';
 import 'widgets/category_chips.dart';
+import 'widgets/offline_banner.dart';
 import 'widgets/restaurant_list.dart';
 import 'widgets/restaurant_search_field.dart';
 
@@ -53,6 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: RestaurantSearchField(),
           ),
           CategoryChips(),
+          OfflineBanner(),
           Expanded(child: RestaurantList()),
         ],
       ),

@@ -236,4 +236,24 @@ void main() {
       expect(provider.hasFilters, isFalse);
     });
   });
+
+  test('flags results that came from the offline cache', () async {
+    when(
+      () => repository.getRestaurants(
+        query: any(named: 'query'),
+        category: any(named: 'category'),
+        limit: any(named: 'limit'),
+        cursor: any(named: 'cursor'),
+      ),
+    ).thenAnswer(
+      (_) async => PagedResult(items: [restaurant()], fromCache: true),
+    );
+    final provider = RestaurantsProvider(repository);
+
+    await provider.loadInitial();
+
+    expect(provider.state, ViewState.success);
+    expect(provider.isShowingCached, isTrue);
+    expect(provider.hasMore, isFalse);
+  });
 }
