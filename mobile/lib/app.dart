@@ -8,18 +8,23 @@ import 'core/network/dio_client.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'data/repositories/auth_repository.dart';
+import 'data/repositories/notification_repository.dart';
 import 'data/repositories/order_repository.dart';
 import 'data/repositories/restaurant_repository.dart';
 import 'data/services/auth_service.dart';
+import 'data/services/device_api_service.dart';
 import 'data/services/location_service.dart';
+import 'data/services/notification_service.dart';
 import 'data/services/order_api_service.dart';
 import 'data/services/order_stream_service.dart';
 import 'data/services/restaurant_api_service.dart';
 import 'providers/auth_provider.dart';
 import 'providers/cart_provider.dart';
+import 'providers/notification_provider.dart';
 import 'providers/orders_provider.dart';
 import 'providers/restaurants_provider.dart';
 import 'providers/theme_provider.dart';
+import 'widgets/push_message_handler.dart';
 
 /// Creates the app's object graph once: infrastructure first, then the
 /// providers that depend on it.
@@ -48,9 +53,14 @@ class QuickPlateApp extends StatelessWidget {
         Provider<OrderApiService>(create: (c) => OrderApiService(c.read())),
         Provider<OrderStreamService>(create: (_) => OrderStreamService()),
         Provider<LocationService>(create: (_) => LocationService()),
+        Provider<NotificationService>(create: (_) => NotificationService()),
+        Provider<DeviceApiService>(create: (c) => DeviceApiService(c.read())),
         Provider<AuthRepository>(create: (c) => AuthRepository(c.read())),
         Provider<OrderRepository>(
           create: (c) => OrderRepository(c.read(), c.read()),
+        ),
+        Provider<NotificationRepository>(
+          create: (c) => NotificationRepository(c.read(), c.read()),
         ),
         Provider<RestaurantRepository>(
           create: (c) => RestaurantRepository(c.read()),
@@ -63,6 +73,10 @@ class QuickPlateApp extends StatelessWidget {
         ChangeNotifierProvider(create: (c) => RestaurantsProvider(c.read())),
         ChangeNotifierProxyProvider<AuthProvider, OrdersProvider>(
           create: (c) => OrdersProvider(c.read()),
+          update: (_, auth, previous) => previous!..onAuthChanged(auth.user),
+        ),
+        ChangeNotifierProxyProvider<AuthProvider, NotificationProvider>(
+          create: (c) => NotificationProvider(c.read()),
           update: (_, auth, previous) => previous!..onAuthChanged(auth.user),
         ),
       ],
@@ -81,6 +95,7 @@ class _AppView extends StatefulWidget {
 class _AppViewState extends State<_AppView> {
   // Created once: rebuilding the router would reset navigation.
   late final GoRouter _router = createRouter(context.read<AuthProvider>());
+  final _messengerKey = GlobalKey<ScaffoldMessengerState>();
 
   @override
   void dispose() {
@@ -94,13 +109,18 @@ class _AppViewState extends State<_AppView> {
       (p) => p.themeMode,
     );
 
-    return MaterialApp.router(
-      title: 'QuickPlate',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.light(),
-      darkTheme: AppTheme.dark(),
-      themeMode: themeMode,
-      routerConfig: _router,
+    return PushMessageHandler(
+      router: _router,
+      messengerKey: _messengerKey,
+      child: MaterialApp.router(
+        title: 'QuickPlate',
+        debugShowCheckedModeBanner: false,
+        scaffoldMessengerKey: _messengerKey,
+        theme: AppTheme.light(),
+        darkTheme: AppTheme.dark(),
+        themeMode: themeMode,
+        routerConfig: _router,
+      ),
     );
   }
 }
