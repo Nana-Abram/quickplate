@@ -56,3 +56,39 @@ MenuItem menuItem({String id = 'jollof', bool isAvailable = true}) =>
 
 MenuCategory menuCategory(String name, List<MenuItem> items) =>
     MenuCategory(name: name, items: items);
+
+Map<String, dynamic> orderJson({
+  String id = 'order-1',
+  String status = 'placed',
+  List<String> history = const ['placed'],
+}) => {
+  'id': id,
+  'userId': 'u1',
+  'restaurantId': 'adwoas-kitchen',
+  'restaurantName': "Adwoa's Kitchen",
+  'items': [
+    {
+      'menuItemId': 'jollof',
+      'name': 'Jollof Rice',
+      'unitPricePesewas': 4500,
+      'quantity': 2,
+      'notes': 'extra shito',
+    },
+  ],
+  'subtotalPesewas': 9000,
+  'deliveryFeePesewas': 1200,
+  'totalPesewas': 10200,
+  'deliveryAddress': {
+    'label': 'Home',
+    'line1': '12 Prempeh II St, Adum',
+    'lat': 6.69,
+    'lng': -1.62,
+  },
+  'paymentMethod': 'cash_on_delivery',
+  'status': status,
+  'statusHistory': [
+    for (final s in history) {'status': s, 'at': '2026-10-12T10:00:00.000Z'},
+  ],
+  'createdAt': '2026-10-12T10:00:00.000Z',
+  'updatedAt': '2026-10-12T10:00:00.000Z',
+};

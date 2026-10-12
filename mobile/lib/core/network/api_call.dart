@@ -13,5 +13,8 @@ Future<T> guardApiCall<T>(Future<T> Function() call) async {
   } on TypeError {
     // The response did not have the expected shape.
     throw const UnknownException();
+  } on FormatException {
+    // A value the app does not understand, e.g. a new order status.
+    throw const UnknownException();
   }
 }
