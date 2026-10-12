@@ -42,3 +42,9 @@ One line per decision made where the spec was silent or ambiguous.
 - `CartProvider.addItem` returns an `AddToCartResult` instead of showing UI, so the "start a new cart?" question stays in the widget layer and the rule stays testable. It also refuses closed restaurants, unavailable dishes, and more than 20 of a line or 30 lines, mirroring the API.
 - After "Keep cart" the item sheet stays open, so the user can change their mind without reopening it.
 - The add-to-cart snackbar sets `persist: false`: in this Flutter version a snackbar with an action stays until dismissed by default.
+- The map picker keeps the pin fixed at the centre: dragging the map or tapping a spot moves the location under it. The pin starts at the last chosen address, else the cart's restaurant, else Kumasi city centre.
+- There is no reverse geocoding (it would need another service); the user types the address line for the rider, and the pin supplies the coordinates.
+- Location is optional: a refused permission shows a hint and the map still works. A permanent refusal offers a shortcut to Settings.
+- No distance check between restaurant and delivery address; the spec does not ask for one.
+- The chosen address and payment method are form state in the checkout screen; placing the order goes through `OrdersProvider`.
+- After a successful order the app navigates to `/orders/:id` first and then clears the cart, so checkout never flashes its empty state. Phase 6 shows a confirmation there; Phase 7 replaces it with live tracking.
