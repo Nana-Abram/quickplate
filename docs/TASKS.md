@@ -12,16 +12,16 @@ Work one phase at a time on its own branch, then stop for review. Tick boxes as 
 **Done when:** the app launches to a placeholder screen, CI file exists, first commits are clean.
 
 ## Phase 1: Backend (`feat/phase-1-backend`)
-- [ ] Express app with config validation, `helmet`, `cors`, rate limit, error middleware, `/v1/health`
-- [ ] Firebase Admin init; auth middleware verifying ID tokens
-- [ ] `scripts/seed.js`: 8 restaurants (Kumasi and Accra), 8 to 12 menu items each, several categories (e.g. Local, Fast Food, Pizza, Healthy, Drinks). Use placeholder image URLs from `https://picsum.photos/seed/<name>/600/400`.
-- [ ] Restaurants endpoints with search, category filter and cursor pagination
-- [ ] Orders endpoints: create (server-computed totals), list, get, cancel
-- [ ] `orderSimulator.js` and the demo `advance` endpoint behind `ENABLE_DEMO_ENDPOINTS`
-- [ ] `notificationService.js` sends FCM on status change (no-op with a log if the user has no tokens)
-- [ ] `PUT /me/device-token`
-- [ ] `firestore.rules` per `SPEC.md`
-- [ ] Tests listed in `ARCHITECTURE.md`, `backend/README.md` with env vars and run steps
+- [x] Express app with config validation, `helmet`, `cors`, rate limit, error middleware, `/v1/health`
+- [x] Firebase Admin init; auth middleware verifying ID tokens
+- [x] `scripts/seed.js`: 8 restaurants (Kumasi and Accra), 8 to 12 menu items each, several categories (e.g. Local, Fast Food, Pizza, Healthy, Drinks). Use placeholder image URLs from `https://picsum.photos/seed/<name>/600/400`.
+- [x] Restaurants endpoints with search, category filter and cursor pagination
+- [x] Orders endpoints: create (server-computed totals), list, get, cancel
+- [x] `orderSimulator.js` and the demo `advance` endpoint behind `ENABLE_DEMO_ENDPOINTS`
+- [x] `notificationService.js` sends FCM on status change (no-op with a log if the user has no tokens)
+- [x] `PUT /me/device-token`
+- [x] `firestore.rules` per `SPEC.md`
+- [x] Tests listed in `ARCHITECTURE.md`, `backend/README.md` with env vars and run steps
 **Done when:** `npm test` passes and every endpoint in `SPEC.md` works against the real Firebase project (needs `docs/MANUAL_SETUP.md` steps 1 to 4, ask the user if missing).
 
 ## Phase 2: App foundation (`feat/phase-2-foundation`)
