@@ -71,9 +71,9 @@ Work one phase at a time on its own branch, then stop for review. Tick boxes as 
 **Done when:** status changes made by the simulator show up live without refreshing.
 
 ## Phase 8: Push notifications (`feat/phase-8-push`)
-- [ ] `NotificationService`: permission, token upload, token refresh
-- [ ] Foreground in-app banner, background and terminated tap deep-links to `/orders/:id`
-- [ ] Android 13 notification permission handled
+- [x] `NotificationService`: permission, token upload, token refresh
+- [x] Foreground in-app banner, background and terminated tap deep-links to `/orders/:id`
+- [x] Android 13 notification permission handled
 **Done when:** a status change triggers a notification on a real device and tapping it opens the order.
 
 ## Phase 9: Polish and performance (`feat/phase-9-polish`)
