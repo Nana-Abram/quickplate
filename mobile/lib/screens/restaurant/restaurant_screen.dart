@@ -63,10 +63,12 @@ class RestaurantScreen extends StatelessWidget {
               sliver: RestaurantSliverAppBar(
                 restaurant: restaurant,
                 forceElevated: innerBoxIsScrolled,
-                bottom: TabBar(
-                  isScrollable: true,
-                  tabAlignment: TabAlignment.start,
-                  tabs: [for (final c in categories) Tab(text: c.name)],
+                bottom: _SolidTabBar(
+                  TabBar(
+                    isScrollable: true,
+                    tabAlignment: TabAlignment.start,
+                    tabs: [for (final c in categories) Tab(text: c.name)],
+                  ),
                 ),
               ),
             ),
@@ -78,6 +80,25 @@ class RestaurantScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Gives the tabs an opaque background so they stay readable over the
+/// header image while it is expanded.
+class _SolidTabBar extends StatelessWidget implements PreferredSizeWidget {
+  const _SolidTabBar(this.tabBar);
+
+  final TabBar tabBar;
+
+  @override
+  Size get preferredSize => tabBar.preferredSize;
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: Theme.of(context).colorScheme.surface,
+      child: tabBar,
     );
   }
 }
