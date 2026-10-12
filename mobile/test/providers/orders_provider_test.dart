@@ -123,4 +123,57 @@ void main() {
     expect(provider.placeOrderError, isNull);
     expect(provider.placeOrderState, ViewState.idle);
   });
+
+  group('history', () {
+    test('loading then success, newest first as the API sends them', () async {
+      final older = Order.fromJson(orderJson(id: 'older'));
+      final newer = Order.fromJson(orderJson(id: 'newer'));
+      when(() => repository.getOrders())
+          .thenAnswer((_) async => [newer, older]);
+      final provider = OrdersProvider(repository);
+      final states = <ViewState>[];
+      provider.addListener(() => states.add(provider.historyState));
+
+      await provider.loadOrders();
+
+      expect(states, [ViewState.loading, ViewState.success]);
+      expect(provider.orders.map((o) => o.id), ['newer', 'older']);
+    });
+
+    test('empty and error states', () async {
+      when(() => repository.getOrders()).thenAnswer((_) async => []);
+      final provider = OrdersProvider(repository);
+      await provider.loadOrders();
+      expect(provider.historyState, ViewState.empty);
+
+      when(() => repository.getOrders()).thenThrow(const NetworkException());
+      await provider.loadOrders();
+      expect(provider.historyState, ViewState.error);
+      expect(provider.historyError, const NetworkException().message);
+    });
+
+    test('a newly placed order joins a loaded history', () async {
+      when(() => repository.getOrders()).thenAnswer((_) async => []);
+      stubPlaceOrder(() async => order);
+      final provider = OrdersProvider(repository);
+      await provider.loadOrders();
+
+      await place(provider);
+
+      expect(provider.historyState, ViewState.success);
+      expect(provider.orders.single.id, order.id);
+    });
+
+    test('switching user clears the previous history', () async {
+      when(() => repository.getOrders()).thenAnswer((_) async => [order]);
+      final provider = OrdersProvider(repository)
+        ..onAuthChanged(const AppUser(uid: 'a', email: 'a@example.com'));
+      await provider.loadOrders();
+
+      provider.onAuthChanged(null);
+
+      expect(provider.orders, isEmpty);
+      expect(provider.historyState, ViewState.idle);
+    });
+  });
 }
