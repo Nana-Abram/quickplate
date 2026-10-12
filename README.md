@@ -3,7 +3,7 @@
 [![Mobile](https://github.com/Nana-Abram/quickplate/actions/workflows/mobile.yml/badge.svg)](https://github.com/Nana-Abram/quickplate/actions/workflows/mobile.yml)
 [![Backend](https://github.com/Nana-Abram/quickplate/actions/workflows/backend.yml/badge.svg)](https://github.com/Nana-Abram/quickplate/actions/workflows/backend.yml)
 
-**Order from restaurants in Kumasi and Accra and watch your food move from "placed" to "delivered" in real time.** A Flutter app (Provider, go_router, Firebase) with a small Node/Express API that prices orders and simulates the restaurant and rider.
+**Order waakye, jollof, banku and tilapia or fufu from restaurants in Accra and Kumasi, and watch your food move from "placed" to "delivered" in real time.** A Flutter app (Provider, go_router, Firebase) with a small Node/Express API that prices orders and simulates the restaurant and rider.
 
 <!-- Add captures to docs/screenshots/ and replace this block. Suggested: home, menu, cart, checkout map, live tracking, profile (dark). -->
 | Home | Menu | Checkout | Live tracking |
@@ -16,7 +16,7 @@ _Demo GIF coming soon._
 ## Features
 
 - **Accounts:** email/password sign-up and sign-in, password reset, and a session that survives restarts.
-- **Browse:** restaurant list with debounced search, category chips, infinite scroll, pull-to-refresh and a "closed" badge. The last page stays available offline.
+- **Browse:** a greeting header with search, photo category filters, a "Top rated" carousel, and a restaurant list with debounced search, infinite scroll, pull-to-refresh and a "closed" badge. The last page stays available offline.
 - **Menus:** header image, sticky category tabs, and greyed-out dishes that are sold out.
 - **Cart:** one restaurant at a time (with a "start a new cart?" prompt), quantities, kitchen notes, swipe to remove.
 - **Checkout:** OpenStreetMap address picker with "use my location", saved addresses, and cash or demo card payment. The server, not the app, sets every price.
@@ -24,6 +24,7 @@ _Demo GIF coming soon._
 - **Push notifications:** FCM on every status change. A tap opens the order, even from a cold start.
 - **Order history, profile and themes:** status chips, saved addresses, and a light/dark/system theme that is remembered between launches.
 - **Every data screen** has loading (shimmer), empty, error (with retry) and success states.
+- **Look and feel:** a warm theme with kente accents and the Plus Jakarta Sans typeface, and real photos of Ghanaian food on every restaurant and dish. The 18 sample restaurants are invented; the photos are openly licensed and credited in [docs/PHOTO_CREDITS.md](docs/PHOTO_CREDITS.md).
 
 ## Tech stack
 
@@ -34,7 +35,7 @@ _Demo GIF coming soon._
 | Maps | flutter_map + OpenStreetMap tiles, geolocator (no API key) |
 | UI | Material 3 light/dark theme, cached_network_image, shimmer, shared_preferences |
 | Backend | Node 22, Express 5, firebase-admin, zod validation, helmet, cors |
-| Tests | flutter_test + mocktail (185 tests), vitest + supertest (51 tests) |
+| Tests | flutter_test + mocktail (188 tests), vitest + supertest (51 tests) |
 | CI | GitHub Actions: analyze, format check, tests, release APK artifact |
 
 ## Architecture
@@ -81,7 +82,7 @@ dart pub global activate flutterfire_cli
    npm install
    cp .env.example .env
    firebase deploy --only firestore   # security rules + indexes; set your project id in .firebaserc first
-   npm run seed                       # 8 restaurants in Kumasi and Accra
+   npm run seed                       # 18 restaurants in Accra, Tema and Kumasi
    npm run dev                        # http://localhost:4000/v1
    ```
 3. **App.**
@@ -153,6 +154,7 @@ To check rebuilds yourself, run `flutter run --profile` and open the Flutter Dev
 - **The cart** is kept in memory and empties when Android closes the app.
 - **No reverse geocoding:** you type the street line and the map pin supplies the coordinates. There is no distance check between restaurant and address.
 - **Simulator restarts:** simulator timers live in the API process, so orders stop advancing if the server restarts mid-delivery (the demo endpoint can move them on).
+- **Sample data:** the restaurants are invented. Their photos load from Wikimedia Commons, Flickr and the WordPress Photo Directory, so they need a connection the first time (then they are cached).
 - **iOS** builds are configured but not tested.
 
 ## Roadmap

@@ -40,12 +40,14 @@ Map<String, dynamic> menuItemJson({
 Restaurant restaurant({
   String id = 'adwoas-kitchen',
   String name = "Adwoa's Kitchen",
+  num rating = 4.7,
   bool isOpen = true,
   int deliveryFeePesewas = 1200,
 }) => Restaurant.fromJson(
   restaurantJson(
     id: id,
     name: name,
+    rating: rating,
     isOpen: isOpen,
     deliveryFeePesewas: deliveryFeePesewas,
   ),

@@ -42,7 +42,9 @@ void main() {
     testWidgets('validates before calling the repository', (tester) async {
       await pumpScreen(tester, const LoginScreen());
 
-      await tester.tap(find.widgetWithText(FilledButton, 'Sign in'));
+      final signIn = find.widgetWithText(FilledButton, 'Sign in');
+      await tester.ensureVisible(signIn);
+      await tester.tap(signIn);
       await tester.pump();
 
       expect(find.text('Enter your email address.'), findsOneWidget);
@@ -62,7 +64,9 @@ void main() {
 
       await tester.enterText(field('Email'), 'ama@example.com');
       await tester.enterText(field('Password'), 'wrong');
-      await tester.tap(find.widgetWithText(FilledButton, 'Sign in'));
+      final signIn = find.widgetWithText(FilledButton, 'Sign in');
+      await tester.ensureVisible(signIn);
+      await tester.tap(signIn);
       await tester.pump();
 
       expect(find.text('Incorrect email or password.'), findsOneWidget);

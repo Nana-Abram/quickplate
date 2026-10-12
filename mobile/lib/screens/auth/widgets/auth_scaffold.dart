@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/auth_provider.dart';
+import '../../../widgets/kente_band.dart';
 
-/// Shared layout for the auth forms: centred, scrollable, width-capped for
-/// tablets, with a title block above the form.
+/// Shared layout for the auth forms: an optional food photo header with the
+/// brand, then a scrollable, width-capped form below a title block.
 class AuthScaffold extends StatelessWidget {
   const AuthScaffold({
     super.key,
@@ -24,46 +26,126 @@ class AuthScaffold extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(),
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 420),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (showLogo)
-                    Icon(
-                      Icons.delivery_dining,
-                      size: 56,
-                      color: theme.colorScheme.primary,
+      extendBodyBehindAppBar: showLogo,
+      appBar: AppBar(
+        backgroundColor: showLogo ? Colors.transparent : null,
+        foregroundColor: showLogo ? Colors.white : null,
+        systemOverlayStyle: showLogo ? SystemUiOverlayStyle.light : null,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            if (showLogo) const _Hero() else const SizedBox(height: 24),
+            SafeArea(
+              top: !showLogo,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 420),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (showLogo) ...[
+                          const _Wordmark(),
+                          const SizedBox(height: 20),
+                        ],
+                        Text(
+                          title,
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.headlineSmall,
+                        ),
+                        if (subtitle != null) ...[
+                          const SizedBox(height: 8),
+                          Text(
+                            subtitle!,
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                        const SizedBox(height: 28),
+                        child,
+                      ],
                     ),
-                  const SizedBox(height: 16),
-                  Text(
-                    title,
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.headlineSmall,
                   ),
-                  if (subtitle != null) ...[
-                    const SizedBox(height: 8),
-                    Text(
-                      subtitle!,
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                  const SizedBox(height: 32),
-                  child,
-                ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A plate of Ghanaian food fading into the page, edged with kente.
+class _Hero extends StatelessWidget {
+  const _Hero();
+
+  @override
+  Widget build(BuildContext context) {
+    final surface = Theme.of(context).colorScheme.surface;
+    return SizedBox(
+      height: 240,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            'assets/images/hero_plate.jpg',
+            fit: BoxFit.cover,
+            excludeFromSemantics: true,
+          ),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                // Dark at the top keeps the status bar icons readable.
+                colors: [Colors.black54, Colors.transparent, surface],
+                stops: const [0, 0.45, 1],
               ),
             ),
           ),
-        ),
+          const Align(alignment: Alignment.bottomCenter, child: KenteBand()),
+        ],
       ),
+    );
+  }
+}
+
+class _Wordmark extends StatelessWidget {
+  const _Wordmark();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: scheme.primary,
+            shape: BoxShape.circle,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Icon(Icons.delivery_dining, color: scheme.onPrimary),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Flexible(
+          child: Text(
+            'QuickPlate',
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w800,
+              color: scheme.primary,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

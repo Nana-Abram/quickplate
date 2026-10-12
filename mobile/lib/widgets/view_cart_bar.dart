@@ -22,19 +22,38 @@ class ViewCartBar extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    final scheme = Theme.of(context).colorScheme;
     return SafeArea(
       minimum: const EdgeInsets.all(16),
       child: FilledButton(
+        style: FilledButton.styleFrom(
+          minimumSize: const Size.fromHeight(60),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+        ),
         onPressed: () => context.push(Routes.cart),
         child: Row(
           children: [
-            Badge.count(
-              count: count,
-              child: const Icon(Icons.shopping_bag_outlined),
+            Semantics(
+              label: count == 1 ? '1 item' : '$count items',
+              excludeSemantics: true,
+              child: Container(
+                constraints: const BoxConstraints(minWidth: 36),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                decoration: BoxDecoration(
+                  color: scheme.onPrimary.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text('$count', textAlign: TextAlign.center),
+              ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 12),
             const Expanded(child: Text('View cart')),
             Text(Money.format(subtotal)),
+            const SizedBox(width: 4),
+            const Icon(Icons.chevron_right),
           ],
         ),
       ),

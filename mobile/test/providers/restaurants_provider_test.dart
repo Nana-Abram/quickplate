@@ -256,4 +256,61 @@ void main() {
     expect(provider.isShowingCached, isTrue);
     expect(provider.hasMore, isFalse);
   });
+
+  group('featured', () {
+    PagedResult<Restaurant> rated(Map<String, num> ratings, {String? next}) =>
+        PagedResult(
+          items: [
+            for (final MapEntry(key: id, value: rating) in ratings.entries)
+              restaurant(id: id, rating: rating, isOpen: id != 'closed'),
+          ],
+          nextCursor: next,
+        );
+
+    test('lists the best-rated open restaurants, at most five', () async {
+      stubFetch(
+        (_) async => rated({
+          'a': 4.1,
+          'closed': 5.0,
+          'b': 4.9,
+          'c': 4.5,
+          'd': 3.9,
+          'e': 4.7,
+          'f': 4.3,
+        }),
+      );
+      final provider = RestaurantsProvider(repository);
+
+      await provider.loadInitial();
+
+      expect(provider.featured.map((r) => r.id), ['b', 'e', 'c', 'f', 'a']);
+    });
+
+    test('is empty while a search or category is active', () async {
+      stubFetch((_) async => rated({'a': 4.5}));
+      final provider = RestaurantsProvider(repository);
+      await provider.loadInitial();
+
+      await provider.selectCategory('Pizza');
+      expect(provider.featured, isEmpty);
+
+      await provider.clearFilters();
+      expect(provider.featured.map((r) => r.id), ['a']);
+    });
+
+    test('does not change when the next page arrives', () async {
+      stubFetch(
+        (call) async => call.namedArguments[#cursor] == null
+            ? rated({'a': 4.0}, next: 'a')
+            : rated({'b': 4.9}),
+      );
+      final provider = RestaurantsProvider(repository);
+      await provider.loadInitial();
+
+      await provider.loadMore();
+
+      expect(ids(provider), ['a', 'b']);
+      expect(provider.featured.map((r) => r.id), ['a']);
+    });
+  });
 }
