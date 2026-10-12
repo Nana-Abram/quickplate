@@ -89,8 +89,8 @@ Work one phase at a time on its own branch, then stop for review. Tick boxes as 
 - [x] Optional: a build job that uploads a release APK as a workflow artifact
 
 ## Phase 11: Documentation and release (`feat/phase-11-release`)
-- [ ] Root `README.md`: one-line pitch, screenshots and demo GIF placeholders (the user will add real captures), features, tech stack, architecture diagram (Mermaid), setup steps, API summary, testing, performance notes, known limitations, roadmap
-- [ ] `mobile/README.md` and `backend/README.md` kept short and accurate
+- [x] Root `README.md`: one-line pitch, screenshots and demo GIF placeholders (the user will add real captures), features, tech stack, architecture diagram (Mermaid), setup steps, API summary, testing, performance notes, known limitations, roadmap
+- [x] `mobile/README.md` and `backend/README.md` kept short and accurate
 - [ ] Signed release APK build instructions, tag `v1.0.0`
-- [ ] `docs/DECISIONS.md` reviewed and tidied
+- [x] `docs/DECISIONS.md` reviewed and tidied
 **Done when:** a stranger can clone the repo and run the app by following the README only.
