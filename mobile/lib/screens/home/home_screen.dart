@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/theme/colors.dart';
 import '../../providers/restaurants_provider.dart';
 import 'widgets/category_chips.dart';
 import 'widgets/featured_carousel.dart';
@@ -30,27 +31,39 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Light status bar icons over the orange header, with no scrim, so the
-    // gradient runs to the top edge.
-    return const AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
+    // A strip in the header's colour stays behind the status bar, so its
+    // light icons stay readable after the header scrolls away.
+    final topInset = MediaQuery.paddingOf(context).top;
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
         statusBarBrightness: Brightness.dark,
       ),
       child: Scaffold(
-        body: RestaurantList(
-          header: [
-            SliverToBoxAdapter(child: HomeHeader()),
-            SliverToBoxAdapter(child: OfflineBanner()),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.only(top: 16),
-                child: CategoryChips(),
+        body: Column(
+          children: [
+            Container(height: topInset, color: AppColors.brandWarm),
+            Expanded(
+              child: MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                child: const RestaurantList(
+                  header: [
+                    SliverToBoxAdapter(child: HomeHeader()),
+                    SliverToBoxAdapter(child: OfflineBanner()),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 16),
+                        child: CategoryChips(),
+                      ),
+                    ),
+                    SliverToBoxAdapter(child: FeaturedCarousel()),
+                    SliverToBoxAdapter(child: _ListTitle()),
+                  ],
+                ),
               ),
             ),
-            SliverToBoxAdapter(child: FeaturedCarousel()),
-            SliverToBoxAdapter(child: _ListTitle()),
           ],
         ),
       ),

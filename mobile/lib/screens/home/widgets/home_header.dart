@@ -10,7 +10,8 @@ import '../../../widgets/kente_band.dart';
 import 'restaurant_search_field.dart';
 
 /// Warm gradient header: greeting, shortcuts, the search box and a kente
-/// band along the bottom edge. Draws behind the status bar.
+/// band along the bottom edge. Starts in [AppColors.brandWarm], the colour
+/// of the strip the home screen pins behind the status bar.
 class HomeHeader extends StatelessWidget {
   const HomeHeader({super.key});
 
@@ -28,55 +29,52 @@ class HomeHeader extends StatelessWidget {
       child: DecoratedBox(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
             colors: [AppColors.brandWarm, AppColors.brandDeep],
           ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SafeArea(
-              bottom: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 8, 8, 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            greeting,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        const _HeaderActions(),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 12, bottom: 16),
-                      child: Semantics(
-                        header: true,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 8, 8, 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
                         child: Text(
-                          'What are you craving today?',
-                          style: theme.textTheme.headlineMedium?.copyWith(
+                          greeting,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.titleMedium?.copyWith(
                             color: Colors.white,
-                            height: 1.15,
                           ),
                         ),
                       ),
+                      const _HeaderActions(),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 12, bottom: 16),
+                    child: Semantics(
+                      header: true,
+                      child: Text(
+                        'What are you craving today?',
+                        style: theme.textTheme.headlineMedium?.copyWith(
+                          color: Colors.white,
+                          height: 1.15,
+                        ),
+                      ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(right: 12),
-                      child: _SearchBox(),
-                    ),
-                  ],
-                ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(right: 12),
+                    child: _SearchBox(),
+                  ),
+                ],
               ),
             ),
             const KenteBand(),
