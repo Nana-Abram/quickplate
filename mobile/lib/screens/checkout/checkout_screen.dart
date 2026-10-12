@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../core/constants/routes.dart';
 import '../../core/utils/money.dart';
+import '../../core/utils/text_format.dart';
 import '../../data/models/address.dart';
 import '../../data/models/payment_method.dart';
 import '../../providers/cart_provider.dart';
@@ -105,7 +106,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ),
           const SizedBox(height: 24),
           Text(
-            '${cart.restaurant?.name} · ${cart.itemCount} items',
+            '${cart.restaurant?.name} · ${TextFormat.itemCount(cart.itemCount)}',
             style: text.titleMedium,
           ),
           const SizedBox(height: 8),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/utils/money.dart';
+import '../../../core/utils/text_format.dart';
 import '../../../data/models/order.dart';
 import '../../../widgets/order_status_chip.dart';
 
@@ -42,7 +43,8 @@ class OrderCard extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                '${order.itemCount} items · ${Money.format(order.totalPesewas)}',
+                '${TextFormat.itemCount(order.itemCount)} · '
+                '${Money.format(order.totalPesewas)}',
                 style: theme.textTheme.bodyMedium,
               ),
               Text(
