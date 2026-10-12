@@ -13,44 +13,20 @@ import '../../../widgets/shimmer_list.dart';
 
 /// Renders every state of the home list: loading, error, empty and the
 /// paginated, pull-to-refresh list.
-class RestaurantList extends StatelessWidget {
-  const RestaurantList({super.key});
+///
+/// [header] slivers (greeting, search, categories) scroll with the list and
+/// stay in place across states, so the search field keeps its text and
+/// focus while results load.
+class RestaurantList extends StatefulWidget {
+  const RestaurantList({super.key, this.header = const []});
+
+  final List<Widget> header;
 
   @override
-  Widget build(BuildContext context) {
-    final state = context.select<RestaurantsProvider, ViewState>(
-      (p) => p.state,
-    );
-    final provider = context.read<RestaurantsProvider>();
-
-    return switch (state) {
-      ViewState.idle || ViewState.loading => const ShimmerList(itemHeight: 120),
-      ViewState.error => ErrorView(
-        message: provider.errorMessage ?? 'Something went wrong.',
-        onRetry: provider.retry,
-      ),
-      ViewState.empty => EmptyView(
-        icon: Icons.search_off,
-        title: 'No restaurants found',
-        message: provider.hasFilters
-            ? 'Try a different search or category.'
-            : 'Check back soon.',
-        actionLabel: provider.hasFilters ? 'Clear filters' : null,
-        onAction: provider.hasFilters ? provider.clearFilters : null,
-      ),
-      ViewState.success => const _PagedList(),
-    };
-  }
+  State<RestaurantList> createState() => _RestaurantListState();
 }
 
-class _PagedList extends StatefulWidget {
-  const _PagedList();
-
-  @override
-  State<_PagedList> createState() => _PagedListState();
-}
-
-class _PagedListState extends State<_PagedList> {
+class _RestaurantListState extends State<RestaurantList> {
   final _scrollController = ScrollController();
 
   @override
@@ -75,6 +51,59 @@ class _PagedListState extends State<_PagedList> {
 
   @override
   Widget build(BuildContext context) {
+    final state = context.select<RestaurantsProvider, ViewState>(
+      (p) => p.state,
+    );
+    final provider = context.read<RestaurantsProvider>();
+
+    return RefreshIndicator(
+      onRefresh: provider.refresh,
+      child: CustomScrollView(
+        controller: _scrollController,
+        // Pull-to-refresh must work even when the list is short.
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          ...widget.header,
+          switch (state) {
+            ViewState.idle || ViewState.loading => const SliverFillRemaining(
+              hasScrollBody: false,
+              child: SizedBox(
+                height: 480,
+                child: ShimmerList(itemCount: 3, itemHeight: 120),
+              ),
+            ),
+            ViewState.error => SliverFillRemaining(
+              hasScrollBody: false,
+              child: ErrorView(
+                message: provider.errorMessage ?? 'Something went wrong.',
+                onRetry: provider.retry,
+              ),
+            ),
+            ViewState.empty => SliverFillRemaining(
+              hasScrollBody: false,
+              child: EmptyView(
+                icon: Icons.search_off,
+                title: 'No restaurants found',
+                message: provider.hasFilters
+                    ? 'Try a different search or category.'
+                    : 'Check back soon.',
+                actionLabel: provider.hasFilters ? 'Clear filters' : null,
+                onAction: provider.hasFilters ? provider.clearFilters : null,
+              ),
+            ),
+            ViewState.success => const _PagedSliver(),
+          },
+        ],
+      ),
+    );
+  }
+}
+
+class _PagedSliver extends StatelessWidget {
+  const _PagedSliver();
+
+  @override
+  Widget build(BuildContext context) {
     // Only the list and whether a footer exists matter here. The footer
     // watches its own loading and error state, so fetching the next page
     // does not rebuild every visible card.
@@ -82,15 +111,10 @@ class _PagedListState extends State<_PagedList> {
         .select<RestaurantsProvider, (List<Restaurant>, bool)>(
           (p) => (p.restaurants, p.hasMore || p.loadMoreError != null),
         );
-    final provider = context.read<RestaurantsProvider>();
 
-    return RefreshIndicator(
-      onRefresh: provider.refresh,
-      child: ListView.separated(
-        controller: _scrollController,
-        // Pull-to-refresh must work even when the list is short.
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+    return SliverPadding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+      sliver: SliverList.separated(
         itemCount: restaurants.length + (showFooter ? 1 : 0),
         separatorBuilder: (_, _) => const SizedBox(height: 16),
         itemBuilder: (context, index) {

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import '../../core/constants/routes.dart';
 import '../../providers/restaurants_provider.dart';
-import '../../widgets/cart_icon_button.dart';
 import 'widgets/category_chips.dart';
+import 'widgets/featured_carousel.dart';
+import 'widgets/home_header.dart';
 import 'widgets/offline_banner.dart';
 import 'widgets/restaurant_list.dart';
-import 'widgets/restaurant_search_field.dart';
+import 'widgets/section_title.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,34 +30,42 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('QuickPlate'),
-        actions: [
-          IconButton(
-            tooltip: 'Your orders',
-            icon: const Icon(Icons.receipt_long_outlined),
-            onPressed: () => context.push(Routes.orders),
-          ),
-          const CartIconButton(),
-          IconButton(
-            tooltip: 'Profile',
-            icon: const Icon(Icons.account_circle_outlined),
-            onPressed: () => context.push(Routes.profile),
-          ),
-        ],
+    // Light status bar icons over the orange header, with no scrim, so the
+    // gradient runs to the top edge.
+    return const AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
       ),
-      body: const Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.fromLTRB(16, 8, 16, 4),
-            child: RestaurantSearchField(),
-          ),
-          CategoryChips(),
-          OfflineBanner(),
-          Expanded(child: RestaurantList()),
-        ],
+      child: Scaffold(
+        body: RestaurantList(
+          header: [
+            SliverToBoxAdapter(child: HomeHeader()),
+            SliverToBoxAdapter(child: OfflineBanner()),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.only(top: 16),
+                child: CategoryChips(),
+              ),
+            ),
+            SliverToBoxAdapter(child: FeaturedCarousel()),
+            SliverToBoxAdapter(child: _ListTitle()),
+          ],
+        ),
       ),
     );
+  }
+}
+
+class _ListTitle extends StatelessWidget {
+  const _ListTitle();
+
+  @override
+  Widget build(BuildContext context) {
+    final filtered = context.select<RestaurantsProvider, bool>(
+      (p) => p.hasFilters,
+    );
+    return SectionTitle(title: filtered ? 'Results' : 'All restaurants');
   }
 }
