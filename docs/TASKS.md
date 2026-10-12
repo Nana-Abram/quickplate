@@ -49,10 +49,10 @@ Work one phase at a time on its own branch, then stop for review. Tick boxes as 
 **Done when:** browsing, searching and filtering work against the live backend, with all five states visible.
 
 ## Phase 5: Cart (`feat/phase-5-cart`)
-- [ ] `CartItem`, `CartProvider` (rules in `ARCHITECTURE.md`)
-- [ ] Item bottom sheet (quantity, notes), cart badge on the home app bar
-- [ ] Cart screen with quantity steppers, swipe to remove, totals, "clear cart", different-restaurant confirmation dialog
-- [ ] `Money` util and tests for `CartProvider`
+- [x] `CartItem`, `CartProvider` (rules in `ARCHITECTURE.md`)
+- [x] Item bottom sheet (quantity, notes), cart badge on the home app bar
+- [x] Cart screen with quantity steppers, swipe to remove, totals, "clear cart", different-restaurant confirmation dialog
+- [x] `Money` util and tests for `CartProvider`
 **Done when:** cart behaviour matches `SPEC.md` and the unit tests pass.
 
 ## Phase 6: Checkout (`feat/phase-6-checkout`)
