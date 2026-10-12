@@ -23,3 +23,8 @@ coverage/
 # Flutter / Dart (mobile/.gitignore covers the rest)
 .dart_tool/
 build/
+
+# Firebase CLI
+.firebase/
+firebase-debug.log
+firestore-debug.log
