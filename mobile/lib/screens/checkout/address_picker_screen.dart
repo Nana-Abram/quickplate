@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../core/constants/map_config.dart';
 import '../../data/models/address.dart';
+import '../../providers/address_book_provider.dart';
 import '../../providers/address_picker_provider.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_text_field.dart';
@@ -29,6 +32,7 @@ class _AddressPickerScreenState extends State<AddressPickerScreen> {
   late final _line1 = TextEditingController(
     text: widget.initialAddress?.line1 ?? '',
   );
+  bool _saveAddress = true;
 
   @override
   void dispose() {
@@ -65,6 +69,10 @@ class _AddressPickerScreenState extends State<AddressPickerScreen> {
       label: _label.text,
       line1: _line1.text,
     );
+    if (_saveAddress) {
+      // Saving is a convenience; the order must not wait for it.
+      unawaited(context.read<AddressBookProvider>().add(address));
+    }
     context.pop(address);
   }
 
@@ -121,7 +129,14 @@ class _AddressPickerScreenState extends State<AddressPickerScreen> {
                         textInputAction: TextInputAction.done,
                         onFieldSubmitted: (_) => _confirm(),
                       ),
-                      const SizedBox(height: 16),
+                      CheckboxListTile(
+                        value: _saveAddress,
+                        onChanged: (value) =>
+                            setState(() => _saveAddress = value ?? false),
+                        title: const Text('Save to my addresses'),
+                        contentPadding: EdgeInsets.zero,
+                        controlAffinity: ListTileControlAffinity.leading,
+                      ),
                       AppButton(label: 'Confirm address', onPressed: _confirm),
                     ],
                   ),

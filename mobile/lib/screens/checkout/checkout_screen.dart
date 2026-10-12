@@ -7,11 +7,13 @@ import '../../core/utils/money.dart';
 import '../../core/utils/text_format.dart';
 import '../../data/models/address.dart';
 import '../../data/models/payment_method.dart';
+import '../../providers/address_book_provider.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/orders_provider.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/empty_view.dart';
 import '../cart/widgets/cart_summary.dart';
+import 'widgets/address_chooser_sheet.dart';
 import 'widgets/delivery_address_card.dart';
 import 'widgets/payment_method_selector.dart';
 import 'widgets/place_order_error.dart';
@@ -36,17 +38,37 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     });
   }
 
-  Future<void> _pickAddress() async {
-    final address = await context.push<Address>(
-      Routes.addressPicker,
-      extra: _address,
-    );
-    if (address != null && mounted) setState(() => _address = address);
+  /// The chosen address, or else the most recently saved one.
+  Address? _effectiveAddress(BuildContext context) =>
+      _address ??
+      context.select<AddressBookProvider, Address?>(
+        (p) => p.addresses.firstOrNull,
+      );
+
+  Future<void> _chooseAddress() async {
+    final saved = context.read<AddressBookProvider>().addresses;
+    final choice = saved.isEmpty
+        ? const PickOnMapChoice()
+        : await showAddressChooser(context, saved: saved);
+    if (!mounted) return;
+    switch (choice) {
+      case SavedAddressChoice(:final address):
+        setState(() => _address = address);
+      case PickOnMapChoice():
+        final address = await context.push<Address>(
+          Routes.addressPicker,
+          extra: _address,
+        );
+        if (address != null && mounted) setState(() => _address = address);
+      case null:
+        break;
+    }
   }
 
   Future<void> _placeOrder() async {
     final cart = context.read<CartProvider>();
-    final address = _address;
+    final address =
+        _address ?? context.read<AddressBookProvider>().addresses.firstOrNull;
     final restaurant = cart.restaurant;
     if (address == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -96,7 +118,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         children: [
           Text('Deliver to', style: text.titleMedium),
           const SizedBox(height: 8),
-          DeliveryAddressCard(address: _address, onTap: _pickAddress),
+          DeliveryAddressCard(
+            address: _effectiveAddress(context),
+            onTap: _chooseAddress,
+          ),
           const SizedBox(height: 24),
           Text('Payment', style: text.titleMedium),
           const SizedBox(height: 8),
