@@ -49,6 +49,7 @@ class NotificationService {
   @visibleForTesting
   static PushMessage toPushMessage(RemoteMessage message) {
     return PushMessage(
+      messageId: message.messageId,
       title: message.notification?.title,
       body: message.notification?.body,
       orderId: message.data['orderId'] as String?,

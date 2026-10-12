@@ -29,6 +29,7 @@ class PushMessageHandler extends StatefulWidget {
 
 class _PushMessageHandlerState extends State<PushMessageHandler> {
   final List<StreamSubscription<PushMessage>> _subscriptions = [];
+  final Set<String> _handledMessageIds = {};
 
   @override
   void initState() {
@@ -44,18 +45,29 @@ class _PushMessageHandlerState extends State<PushMessageHandler> {
 
   Future<void> _openInitialMessage(NotificationProvider notifications) async {
     final message = await notifications.getInitialMessage();
-    final orderId = message?.orderId;
-    // go, not push: after a cold start this is the only screen. The router
-    // holds it on the splash until the session is restored.
-    if (orderId != null && mounted) {
-      widget.router.go(Routes.orderById(orderId));
-    }
+    if (message != null && mounted) _openOrder(message);
   }
 
+  /// After a cold start the plugin can report the same tap both as the
+  /// initial message and as an opened-app event, so each delivery is handled
+  /// once.
   void _openOrder(PushMessage message) {
     final orderId = message.orderId;
-    if (orderId != null) {
-      unawaited(widget.router.push(Routes.orderById(orderId)));
+    final messageId = message.messageId;
+    if (orderId == null) return;
+    if (messageId != null && !_handledMessageIds.add(messageId)) return;
+
+    final location = Routes.orderById(orderId);
+    final onSplash =
+        widget.router.routerDelegate.currentConfiguration.uri.path ==
+        Routes.splash;
+    // While the session is still loading, go: the router holds the order on
+    // the splash and opens it once signed in. Otherwise push, so Back
+    // returns to where the user was.
+    if (onSplash) {
+      widget.router.go(location);
+    } else {
+      unawaited(widget.router.push(location));
     }
   }
 

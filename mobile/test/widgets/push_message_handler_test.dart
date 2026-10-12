@@ -104,4 +104,21 @@ void main() {
 
     expect(find.text('order o-1'), findsOneWidget);
   });
+
+  testWidgets('the same tap reported twice opens the order once', (
+    tester,
+  ) async {
+    const tap = PushMessage(messageId: 'm-1', orderId: 'o-9');
+    when(() => repository.getInitialMessage()).thenAnswer((_) async => tap);
+    await pumpApp(tester);
+
+    opened.add(tap);
+    await tester.pumpAndSettle();
+
+    expect(find.text('order o-9'), findsOneWidget);
+    // Only one order page was pushed: one Back returns home.
+    GoRouter.of(tester.element(find.text('order o-9'))).pop();
+    await tester.pumpAndSettle();
+    expect(find.text('home'), findsOneWidget);
+  });
 }
