@@ -17,12 +17,14 @@ class RestaurantsProvider extends ChangeNotifier {
   }) : _searchDebouncer = Debouncer(searchDelay);
 
   static const int pageSize = 10;
+  static const int featuredCount = 5;
 
   final RestaurantRepository _repository;
   final Debouncer _searchDebouncer;
 
   ViewState _state = ViewState.idle;
   List<Restaurant> _restaurants = const [];
+  List<Restaurant> _featured = const [];
   String? _errorMessage;
   String _query = '';
   String? _category;
@@ -41,6 +43,12 @@ class RestaurantsProvider extends ChangeNotifier {
   String get query => _query;
   String? get category => _category;
   bool get hasFilters => _query.isNotEmpty || _category != null;
+
+  /// The best-rated open restaurants from the first unfiltered page, for
+  /// the home carousel. Empty while searching or filtering, so the results
+  /// stay at the top. Picked once per reload, so it does not reshuffle as
+  /// later pages arrive.
+  List<Restaurant> get featured => hasFilters ? const [] : _featured;
   bool get hasMore => _nextCursor != null;
   bool get isLoadingMore => _isLoadingMore;
   String? get loadMoreError => _loadMoreError;
@@ -120,6 +128,7 @@ class RestaurantsProvider extends ChangeNotifier {
       final page = await _fetch();
       if (generation != _generation) return;
       _restaurants = page.items;
+      _featured = _pickFeatured(page.items);
       _nextCursor = page.nextCursor;
       _showingCached = page.fromCache;
       _errorMessage = null;
@@ -130,6 +139,12 @@ class RestaurantsProvider extends ChangeNotifier {
       _state = ViewState.error;
     }
     notifyListeners();
+  }
+
+  static List<Restaurant> _pickFeatured(List<Restaurant> restaurants) {
+    final open = restaurants.where((r) => r.isOpen).toList()
+      ..sort((a, b) => b.rating.compareTo(a.rating));
+    return List.unmodifiable(open.take(featuredCount));
   }
 
   Future<PagedResult<Restaurant>> _fetch({String? cursor}) {
