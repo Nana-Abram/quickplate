@@ -55,3 +55,8 @@ One line per decision made where the spec was silent or ambiguous.
 - The order history reloads every time its screen opens, since statuses change in the background.
 - The map attribution is a small custom widget: flutter_map's built-in one overflowed narrow maps with large text.
 - The demo control (long-press on the tracking header) only exists in debug builds and needs `ENABLE_DEMO_ENDPOINTS=true` on the backend.
+- Pushes use FCM "notification" messages, so Android shows them in the tray by itself when the app is in the background; no background handler or local-notifications package is needed. They use FCM's default channel.
+- While the app is open, Android does not display pushes, so the app shows them as a snackbar with a "View" action.
+- The device registers its FCM token on sign-in and on every token refresh. On sign-out the token is deleted, so a shared phone stops getting the previous user's order updates; the backend prunes it on the next failed send.
+- A tapped notification is handled once per FCM message id, because after a cold start the plugin can report the same tap both as the initial message and as an opened-app event. While the app is still on the splash it navigates with `go`; afterwards with `push`, so Back returns to the previous screen.
+- Android 13's `POST_NOTIFICATIONS` permission is declared by the firebase_messaging plugin's manifest and requested through `FirebaseMessaging.requestPermission()`.
