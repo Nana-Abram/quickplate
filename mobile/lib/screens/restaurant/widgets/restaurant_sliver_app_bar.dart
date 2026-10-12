@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/utils/money.dart';
 import '../../../data/models/restaurant.dart';
 import '../../../widgets/app_network_image.dart';
+import '../../../widgets/rating_pill.dart';
 
 /// Header image with the restaurant's details. Collapses into a pinned bar
 /// that shows the name (and the category tabs, when given as [bottom]).
@@ -14,7 +15,7 @@ class RestaurantSliverAppBar extends StatelessWidget {
     this.forceElevated = false,
   });
 
-  static const double _expandedHeight = 300;
+  static const double _expandedHeight = 320;
 
   final Restaurant restaurant;
   final PreferredSizeWidget? bottom;
@@ -61,8 +62,15 @@ class RestaurantSliverAppBar extends StatelessWidget {
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: [Colors.transparent, Colors.black87],
-                          stops: [0.3, 1],
+                          // Dark at the top for the status bar, darker at
+                          // the bottom so the name and description read
+                          // on any photo.
+                          colors: [
+                            Colors.black38,
+                            Colors.transparent,
+                            Colors.black87,
+                          ],
+                          stops: [0, 0.25, 0.75],
                         ),
                       ),
                     ),
@@ -110,11 +118,6 @@ class _HeaderInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
     const onImage = Colors.white;
-    final facts = [
-      '★ ${restaurant.rating.toStringAsFixed(1)}',
-      '${restaurant.etaMinutes} min',
-      'Delivery ${Money.formatFee(restaurant.deliveryFeePesewas)}',
-    ].join('  ·  ');
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,7 +125,7 @@ class _HeaderInfo extends StatelessWidget {
       children: [
         Text(
           restaurant.name,
-          style: text.headlineSmall?.copyWith(color: onImage),
+          style: text.headlineMedium?.copyWith(color: onImage),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
@@ -133,8 +136,24 @@ class _HeaderInfo extends StatelessWidget {
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
-        const SizedBox(height: 8),
-        Text(facts, style: text.labelLarge?.copyWith(color: onImage)),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            RatingPill(rating: restaurant.rating),
+            _GlassFact(
+              icon: Icons.schedule_rounded,
+              label: '${restaurant.etaMinutes} min',
+            ),
+            _GlassFact(
+              icon: Icons.delivery_dining_rounded,
+              label:
+                  'Delivery ${Money.formatFee(restaurant.deliveryFeePesewas)}',
+            ),
+          ],
+        ),
         if (!restaurant.isOpen) ...[
           const SizedBox(height: 8),
           const Chip(
@@ -144,6 +163,40 @@ class _HeaderInfo extends StatelessWidget {
           ),
         ],
       ],
+    );
+  }
+}
+
+/// A translucent pill for facts on top of the header photo.
+class _GlassFact extends StatelessWidget {
+  const _GlassFact({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Colors.black45,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white24),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 16, color: Colors.white),
+            const SizedBox(width: 4),
+            Text(
+              label,
+              style: Theme.of(context).textTheme.labelLarge
+                  ?.copyWith(color: Colors.white),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
