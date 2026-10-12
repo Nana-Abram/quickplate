@@ -28,7 +28,8 @@ void main() {
     when(() => restaurants.cachedRestaurant(any())).thenReturn(null);
   });
 
-  tearDown(() => live.close());
+  // close() only completes once the stream had a listener, so do not wait.
+  tearDown(() => unawaited(live.close()));
 
   OrderTrackingProvider tracker({Duration? fallback}) => OrderTrackingProvider(
     orders,

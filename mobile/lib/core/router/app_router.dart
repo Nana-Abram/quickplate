@@ -8,6 +8,7 @@ import '../../providers/address_picker_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/menu_provider.dart';
+import '../../providers/order_tracking_provider.dart';
 import '../../screens/auth/forgot_password_screen.dart';
 import '../../screens/auth/login_screen.dart';
 import '../../screens/auth/register_screen.dart';
@@ -15,6 +16,7 @@ import '../../screens/cart/cart_screen.dart';
 import '../../screens/checkout/address_picker_screen.dart';
 import '../../screens/checkout/checkout_screen.dart';
 import '../../screens/home/home_screen.dart';
+import '../../screens/orders/orders_screen.dart';
 import '../../screens/profile/profile_screen.dart';
 import '../../screens/restaurant/restaurant_screen.dart';
 import '../../screens/splash/splash_screen.dart';
@@ -78,10 +80,18 @@ GoRouter createRouter(AuthProvider authProvider) {
           );
         },
       ),
+      GoRoute(path: Routes.orders, builder: (_, _) => const OrdersScreen()),
       GoRoute(
         path: Routes.orderDetail,
-        builder: (_, state) =>
-            OrderTrackingScreen(orderId: state.pathParameters['id']!),
+        // Screen-scoped: disposing it cancels the Firestore listener.
+        builder: (_, state) => ChangeNotifierProvider(
+          create: (context) => OrderTrackingProvider(
+            context.read(),
+            context.read(),
+            state.pathParameters['id']!,
+          )..load(),
+          child: const OrderTrackingScreen(),
+        ),
       ),
       GoRoute(
         path: Routes.restaurant,
