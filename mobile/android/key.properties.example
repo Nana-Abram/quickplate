@@ -1,0 +1,6 @@
+# Copy to android/key.properties (gitignored) and fill in. storeFile is
+# relative to android/app/. Keep the keystore itself outside the repo.
+storePassword=your-store-password
+keyPassword=your-key-password
+keyAlias=quickplate
+storeFile=../../../quickplate-release.jks
