@@ -56,11 +56,11 @@ Work one phase at a time on its own branch, then stop for review. Tick boxes as 
 **Done when:** cart behaviour matches `SPEC.md` and the unit tests pass.
 
 ## Phase 6: Checkout (`feat/phase-6-checkout`)
-- [ ] `LocationService` (permission flow, graceful denial)
-- [ ] Map picker with `flutter_map`: tap or drag to set the pin, "use my location", editable address line, label
-- [ ] Payment method selector
-- [ ] `OrderApiService.create`, `OrdersProvider.placeOrder`, loading state on the button, error handling, clear cart on success
-- [ ] Navigate to the tracking screen after a successful order
+- [x] `LocationService` (permission flow, graceful denial)
+- [x] Map picker with `flutter_map`: tap or drag to set the pin, "use my location", editable address line, label
+- [x] Payment method selector
+- [x] `OrderApiService.create`, `OrdersProvider.placeOrder`, loading state on the button, error handling, clear cart on success
+- [x] Navigate to the tracking screen after a successful order
 **Done when:** an order is created on the backend and appears in Firestore.
 
 ## Phase 7: Orders and tracking (`feat/phase-7-orders`)
