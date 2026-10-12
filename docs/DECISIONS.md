@@ -37,3 +37,8 @@ One line per decision made where the spec was silent or ambiguous.
 - `Restaurant` flattens `location` into `latitude`/`longitude`; `toJson` rebuilds the API shape.
 - Money shows as `GH₵45.50`; a 0 delivery fee shows as "Free".
 - The 8 seeded restaurants fit in one page of 10, so infinite scroll is covered by provider tests rather than visible with the seed data.
+- The cart lives in memory only, as the spec allows; it empties when Android ends the app.
+- The same dish with different notes is a separate cart line (and a separate order line); the same dish with the same notes merges into one line.
+- `CartProvider.addItem` returns an `AddToCartResult` instead of showing UI, so the "start a new cart?" question stays in the widget layer and the rule stays testable. It also refuses closed restaurants, unavailable dishes, and more than 20 of a line or 30 lines, mirroring the API.
+- After "Keep cart" the item sheet stays open, so the user can change their mind without reopening it.
+- The add-to-cart snackbar sets `persist: false`: in this Flutter version a snackbar with an action stays until dismissed by default.
