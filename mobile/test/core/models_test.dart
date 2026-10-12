@@ -1,5 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:quickplate/data/models/menu_category.dart';
+import 'package:quickplate/data/models/order.dart';
+import 'package:quickplate/data/models/order_status.dart';
+import 'package:quickplate/data/models/payment_method.dart';
 import 'package:quickplate/data/models/restaurant.dart';
 
 import '../helpers/fixtures.dart';
@@ -39,5 +42,39 @@ void main() {
 
     expect(closed.isOpen, isFalse);
     expect(closed.copyWith(isOpen: true), restaurant);
+  });
+
+  group('Order', () {
+    test('parses the API shape and round-trips', () {
+      final order = Order.fromJson(
+        orderJson(status: 'on_the_way', history: ['placed', 'accepted']),
+      );
+
+      expect(order.status, OrderStatus.onTheWay);
+      expect(order.paymentMethod, PaymentMethod.cashOnDelivery);
+      expect(order.items.single.lineTotalPesewas, 9000);
+      expect(order.itemCount, 2);
+      expect(order.deliveryAddress.latitude, 6.69);
+      expect(order.statusHistory.map((h) => h.status), [
+        OrderStatus.placed,
+        OrderStatus.accepted,
+      ]);
+      expect(order.createdAt.isUtc, isTrue);
+      expect(Order.fromJson(order.toJson()), order);
+    });
+
+    test('rejects an unknown status', () {
+      expect(
+        () => Order.fromJson(orderJson(status: 'teleported')),
+        throwsFormatException,
+      );
+    });
+
+    test('only a placed order can be cancelled', () {
+      expect(OrderStatus.placed.canCancel, isTrue);
+      expect(OrderStatus.accepted.canCancel, isFalse);
+      expect(OrderStatus.delivered.isFinal, isTrue);
+      expect(OrderStatus.cancelled.isFinal, isTrue);
+    });
   });
 }

@@ -48,10 +48,12 @@ class _Row extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textStyle = style ?? Theme.of(context).textTheme.bodyLarge;
+    // The label gives way so large text sizes never push the amount off
+    // screen.
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: textStyle),
+        Expanded(child: Text(label, style: textStyle)),
+        const SizedBox(width: 16),
         Text(value, style: textStyle),
       ],
     );
