@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:quickplate/core/errors/app_exception.dart';
 import 'package:quickplate/core/errors/error_mapper.dart';
@@ -93,6 +94,35 @@ void main() {
         mapDioException(responseError(409, 'not json')).message,
         const ConflictException().message,
       );
+    });
+  });
+
+  group('mapFirebaseAuthException', () {
+    AppException map(String code) =>
+        mapFirebaseAuthException(FirebaseAuthException(code: code));
+
+    test('gives one vague message for wrong password or unknown email', () {
+      final messages = {
+        map('invalid-credential').message,
+        map('wrong-password').message,
+        map('user-not-found').message,
+      };
+
+      expect(messages, {'Incorrect email or password.'});
+    });
+
+    test('maps account and network problems', () {
+      expect(map('email-already-in-use').message, contains('already exists'));
+      expect(map('weak-password').message, contains('stronger'));
+      expect(map('too-many-requests').message, contains('Too many attempts'));
+      expect(map('network-request-failed'), isA<NetworkException>());
+    });
+
+    test('never shows an unknown Firebase code to the user', () {
+      final error = map('internal-error');
+
+      expect(error, isA<AuthException>());
+      expect(error.message, isNot(contains('internal-error')));
     });
   });
 }
