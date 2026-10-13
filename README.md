@@ -1,9 +1,9 @@
 # QuickPlate
 
-[![Mobile](https://github.com/Nana-Abram/quickplate/actions/workflows/mobile.yml/badge.svg)](https://github.com/Nana-Abram/quickplate/actions/workflows/mobile.yml)
-[![Backend](https://github.com/Nana-Abram/quickplate/actions/workflows/backend.yml/badge.svg)](https://github.com/Nana-Abram/quickplate/actions/workflows/backend.yml)
+[![Mobile](https://github.com/abraham-addai/quickplate/actions/workflows/mobile.yml/badge.svg)](https://github.com/abraham-addai/quickplate/actions/workflows/mobile.yml)
+[![Backend](https://github.com/abraham-addai/quickplate/actions/workflows/backend.yml/badge.svg)](https://github.com/abraham-addai/quickplate/actions/workflows/backend.yml)
 
-**[Download the Android APK](https://github.com/Nana-Abram/quickplate/releases/latest)** · API: `https://quickplate-api.onrender.com/v1`
+**[Download the Android APK](https://github.com/abraham-addai/quickplate/releases/latest)** · API: `https://quickplate-api.onrender.com/v1`
 
 **Order waakye, jollof, banku and tilapia or fufu from restaurants in Accra and Kumasi, and watch your food move from "placed" to "delivered" in real time.** A Flutter app (Provider, go_router, Firebase) with a small Node/Express API that prices orders and simulates the restaurant and rider.
 
