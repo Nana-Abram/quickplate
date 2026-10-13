@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/auth_provider.dart';
-import '../../../widgets/kente_band.dart';
 
 /// Shared layout for the auth forms: an optional food photo header with the
 /// brand, then a scrollable, width-capped form below a title block.
@@ -80,7 +79,7 @@ class AuthScaffold extends StatelessWidget {
   }
 }
 
-/// A plate of Ghanaian food fading into the page, edged with kente.
+/// A plate of Ghanaian food fading into the page.
 class _Hero extends StatelessWidget {
   const _Hero();
 
@@ -108,7 +107,6 @@ class _Hero extends StatelessWidget {
               ),
             ),
           ),
-          const Align(alignment: Alignment.bottomCenter, child: KenteBand()),
         ],
       ),
     );
