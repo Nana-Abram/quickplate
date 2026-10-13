@@ -135,10 +135,7 @@ void main() {
 
       when(() => api.fetchMenu('r1')).thenThrow(const NotFoundException());
 
-      expect(
-        () => repository.getMenu('r1'),
-        throwsA(isA<NotFoundException>()),
-      );
+      expect(() => repository.getMenu('r1'), throwsA(isA<NotFoundException>()));
     });
   });
 }
