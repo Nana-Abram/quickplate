@@ -24,7 +24,7 @@ _Demo GIF coming soon._
 - **Push notifications:** FCM on every status change. A tap opens the order, even from a cold start.
 - **Order history, profile and themes:** status chips, saved addresses, and a light/dark/system theme that is remembered between launches.
 - **Every data screen** has loading (shimmer), empty, error (with retry) and success states.
-- **Look and feel:** a warm theme with kente accents and the Plus Jakarta Sans typeface, and real photos of Ghanaian food on every restaurant and dish. The 18 sample restaurants are invented; the photos are openly licensed and credited in [docs/PHOTO_CREDITS.md](docs/PHOTO_CREDITS.md).
+- **Look and feel:** a warm orange theme with the Plus Jakarta Sans typeface, and real photos of Ghanaian food on every restaurant and dish. The 18 sample restaurants are invented; the photos are openly licensed and credited in [docs/PHOTO_CREDITS.md](docs/PHOTO_CREDITS.md).
 
 ## Tech stack
 

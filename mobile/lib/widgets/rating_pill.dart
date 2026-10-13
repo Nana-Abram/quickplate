@@ -31,11 +31,7 @@ class RatingPill extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
-                Icons.star_rounded,
-                size: 18,
-                color: AppColors.kenteGold,
-              ),
+              const Icon(Icons.star_rounded, size: 18, color: AppColors.star),
               const SizedBox(width: 2),
               Text(
                 value,
