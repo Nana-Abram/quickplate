@@ -5,9 +5,21 @@ import '../models/restaurant.dart';
 import '../services/restaurant_api_service.dart';
 
 class RestaurantRepository {
-  RestaurantRepository(this._api);
+  RestaurantRepository(
+    this._api, {
+    DateTime Function()? now,
+    this.menuMaxAge = const Duration(minutes: 5),
+  }) : _now = now ?? DateTime.now;
 
   final RestaurantApiService _api;
+  final DateTime Function() _now;
+
+  /// How long a menu is reused before it is fetched again. Short, because
+  /// dishes sell out; the server re-checks every order anyway.
+  final Duration menuMaxAge;
+
+  final Map<String, ({List<MenuCategory> menu, DateTime fetchedAt})> _menus =
+      {};
 
   // Restaurants seen in any list, so the detail screen can draw its header
   // immediately while the menu loads.
@@ -34,10 +46,8 @@ class RestaurantRepository {
         cursor: cursor,
       );
     } on AppException catch (error) {
-      final offline =
-          error is NetworkException || error is RequestTimeoutException;
       final cached = _lastFirstPage;
-      if (offline && isFirstUnfilteredPage && cached != null) {
+      if (_isOffline(error) && isFirstUnfilteredPage && cached != null) {
         // No cursor: further pages cannot be fetched offline.
         return PagedResult(items: cached.items, fromCache: true);
       }
@@ -59,7 +69,24 @@ class RestaurantRepository {
     return restaurant;
   }
 
-  Future<List<MenuCategory>> getMenu(String restaurantId) {
-    return _api.fetchMenu(restaurantId);
+  /// The menu, reused for [menuMaxAge] so going back and forth between
+  /// restaurants is instant. Offline, the last copy is better than an error.
+  Future<List<MenuCategory>> getMenu(String restaurantId) async {
+    final cached = _menus[restaurantId];
+    if (cached != null && _now().difference(cached.fetchedAt) < menuMaxAge) {
+      return cached.menu;
+    }
+
+    try {
+      final menu = await _api.fetchMenu(restaurantId);
+      _menus[restaurantId] = (menu: menu, fetchedAt: _now());
+      return menu;
+    } on AppException catch (error) {
+      if (_isOffline(error) && cached != null) return cached.menu;
+      rethrow;
+    }
   }
+
+  static bool _isOffline(AppException error) =>
+      error is NetworkException || error is RequestTimeoutException;
 }
