@@ -19,6 +19,7 @@ export function createApp({ config, auth, services, logger = consoleLogger }) {
   const app = express();
 
   app.disable('x-powered-by');
+  if (config.trustProxyHops > 0) app.set('trust proxy', config.trustProxyHops);
   app.use(helmet());
   app.use(
     cors({ origin: config.corsOrigins.includes('*') ? '*' : config.corsOrigins }),
