@@ -14,6 +14,8 @@ const envSchema = z.object({
   SIM_STEP_SECONDS: z.coerce.number().int().min(0).default(20),
   CORS_ORIGIN: z.string().min(1).default('*'),
   RATE_LIMIT_PER_MINUTE: z.coerce.number().int().positive().default(120),
+  // How long restaurant and menu reads are served from memory.
+  RESTAURANT_CACHE_SECONDS: z.coerce.number().int().min(0).default(60),
 });
 
 /**
@@ -39,5 +41,6 @@ export function loadConfig(env = process.env) {
     simStepSeconds: parsed.SIM_STEP_SECONDS,
     corsOrigins: parsed.CORS_ORIGIN.split(',').map((origin) => origin.trim()),
     rateLimitPerMinute: parsed.RATE_LIMIT_PER_MINUTE,
+    restaurantCacheSeconds: parsed.RESTAURANT_CACHE_SECONDS,
   };
 }

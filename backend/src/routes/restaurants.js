@@ -4,8 +4,17 @@ import { validate } from '../middleware/validate.js';
 import { idParams } from '../schemas/common.js';
 import { listRestaurantsQuery } from '../schemas/restaurants.js';
 
-export function restaurantsRouter({ restaurantService }) {
+export function restaurantsRouter({ restaurantService, cacheSeconds = 0 }) {
   const router = Router();
+
+  // Restaurants and menus are public and change rarely, so clients and
+  // proxies may reuse them briefly. Order prices are always re-read.
+  if (cacheSeconds > 0) {
+    router.use((_req, res, next) => {
+      res.set('Cache-Control', `public, max-age=${cacheSeconds}`);
+      next();
+    });
+  }
 
   router.get('/', validate({ query: listRestaurantsQuery }), async (req, res) => {
     res.json(await restaurantService.list(req.valid.query));

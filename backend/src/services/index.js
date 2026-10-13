@@ -18,7 +18,10 @@ export function createServices({ db, messaging, config, logger }) {
   const orderService = createOrderService({ db, simulator, notificationService });
 
   return {
-    restaurantService: createRestaurantService({ db }),
+    restaurantService: createRestaurantService({
+      db,
+      cacheSeconds: config.restaurantCacheSeconds,
+    }),
     orderService,
     userService: createUserService({ db }),
     notificationService,
