@@ -3,17 +3,19 @@
 [![Mobile](https://github.com/Nana-Abram/quickplate/actions/workflows/mobile.yml/badge.svg)](https://github.com/Nana-Abram/quickplate/actions/workflows/mobile.yml)
 [![Backend](https://github.com/Nana-Abram/quickplate/actions/workflows/backend.yml/badge.svg)](https://github.com/Nana-Abram/quickplate/actions/workflows/backend.yml)
 
-**[Download the Android APK (v1.0.0)](https://github.com/Nana-Abram/quickplate/releases/latest)** · API: `https://quickplate-api.onrender.com/v1`
+**[Download the Android APK](https://github.com/Nana-Abram/quickplate/releases/latest)** · API: `https://quickplate-api.onrender.com/v1`
 
 **Order waakye, jollof, banku and tilapia or fufu from restaurants in Accra and Kumasi, and watch your food move from "placed" to "delivered" in real time.** A Flutter app (Provider, go_router, Firebase) with a small Node/Express API that prices orders and simulates the restaurant and rider.
 
-<!-- Add captures to docs/screenshots/ and replace this block. Suggested: home, menu, cart, checkout map, live tracking, profile (dark). -->
-| Home | Menu | Checkout | Live tracking |
-|---|---|---|---|
-| _screenshot coming soon_ | _screenshot coming soon_ | _screenshot coming soon_ | _screenshot coming soon_ |
+| Home | Menu | Checkout | Live tracking | Dark mode |
+|---|---|---|---|---|
+| <img src="docs/screenshots/home.jpg" width="180" alt="Home screen with greeting, search, photo categories and top-rated restaurants"> | <img src="docs/screenshots/menu.jpg" width="180" alt="Restaurant menu with dish photos and a view-cart bar"> | <img src="docs/screenshots/checkout.jpg" width="180" alt="Checkout with delivery address, payment method and totals"> | <img src="docs/screenshots/tracking.jpg" width="180" alt="Live order tracking timeline with delivery map"> | <img src="docs/screenshots/dark.jpg" width="180" alt="Home screen in dark mode"> |
 
-<!-- Demo: a 20 to 30 second GIF of the full flow, e.g. docs/screenshots/demo.gif -->
-_Demo GIF coming soon._
+<details>
+<summary><b>Demo:</b> sign in, order waakye and follow it to the door (GIF)</summary>
+<br>
+<img src="docs/screenshots/demo.gif" width="300" alt="Animated walkthrough: sign in, open a restaurant, add dishes, check out and watch the order move from placed to delivered">
+</details>
 
 ## Features
 
@@ -168,7 +170,7 @@ Prices are never served from a cache: the API re-reads every dish when an order 
   3. Run `flutter build apk --release` with `API_BASE_URL` in `mobile/.env` pointing at the deployed API.
 - **Without a key:** release builds fall back to the debug key, which is what CI does. Published releases are built locally with the release key.
 - **Obfuscation:** build with `flutter build apk --release --obfuscate --split-debug-info=build/symbols` and keep `build/symbols` to read crash stack traces.
-- **Backend on Render:** [render.yaml](render.yaml) defines the free web service. Create a Blueprint from this repo and paste the service account JSON into `FIREBASE_SERVICE_ACCOUNT_JSON`. The free tier sleeps when idle, so the first request after a while takes about 30 seconds. The live API runs at `https://quickplate-api.onrender.com/v1`, and CI builds use it through the `API_BASE_URL` repository variable.
+- **Backend on Render:** [render.yaml](render.yaml) defines the free web service. Create a Blueprint from this repo and paste the service account JSON into `FIREBASE_SERVICE_ACCOUNT_JSON`. The free tier sleeps after 15 idle minutes; a [scheduled workflow](.github/workflows/keep-warm.yml) pings it every 10 minutes, and the app waits up to a minute in case it is still waking. The live API runs at `https://quickplate-api.onrender.com/v1`, and CI builds use it through the `API_BASE_URL` repository variable.
 
 ## Known limitations
 

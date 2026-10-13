@@ -8,7 +8,10 @@ Dio buildDio({required String baseUrl, required IdTokenProvider getIdToken}) {
     BaseOptions(
       baseUrl: baseUrl,
       connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 15),
+      // Generous, because the free API host sleeps when idle and takes up to
+      // a minute to answer the first request after that. The shimmer shows
+      // meanwhile, which beats an error the user has to retry.
+      receiveTimeout: const Duration(seconds: 60),
       contentType: Headers.jsonContentType,
       responseType: ResponseType.json,
     ),

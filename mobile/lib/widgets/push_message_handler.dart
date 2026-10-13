@@ -74,6 +74,12 @@ class _PushMessageHandlerState extends State<PushMessageHandler> {
   void _showBanner(PushMessage message) {
     final text = [message.title, message.body].nonNulls.join(': ');
     if (text.isEmpty) return;
+    // The tracking screen for this order already shows the new status live.
+    final orderId = message.orderId;
+    // `state` is the top page, including pushed ones.
+    final currentPath = widget.router.state.uri.path;
+    if (orderId != null && currentPath == Routes.orderById(orderId)) return;
+
     widget.messengerKey.currentState?.showSnackBar(
       SnackBar(
         content: Text(text),

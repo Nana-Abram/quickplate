@@ -7,6 +7,7 @@ Choices made where the spec was silent or ambiguous, one line each, grouped by a
 - Android package and iOS bundle id are `com.abraham.quickplate`. `flutter create` ran with `--org com.abraham`, because `--org com.abraham.quickplate` would append the project name and produce `com.abraham.quickplate.quickplate`.
 - The analyzer runs with `strict-casts` and `strict-raw-types` on top of the lint rules in ARCHITECTURE.md, to catch unsafe JSON casts in hand-written models.
 - `.gitattributes` forces LF line endings so the repo looks the same on Windows, macOS and Linux.
+- The API client waits up to 60 s for a response, because Render's free tier takes up to a minute to wake. A scheduled workflow also pings `/v1/health` every 10 minutes to keep it awake.
 - CI is split into `mobile.yml` and `backend.yml` (path-filtered, one badge each) and pins Flutter 3.47.5 so local and CI analysis agree. Mobile runs analyze, a format check and tests with coverage; backend runs `npm test`.
 - `.env` is bundled as an app asset, so CI copies `.env.example` to `.env` before building.
 - Pushes to `main` also build a release APK as a CI artifact. Without a signing key it is signed with the debug key, and its API URL comes from the `API_BASE_URL` repository variable when set.

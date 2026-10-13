@@ -121,4 +121,23 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('home'), findsOneWidget);
   });
+
+  testWidgets('no banner for the order already on screen', (tester) async {
+    when(() => repository.getInitialMessage())
+        .thenAnswer((_) async => const PushMessage(orderId: 'o-5'));
+    await pumpApp(tester);
+    expect(find.text('order o-5'), findsOneWidget);
+
+    foreground.add(
+      const PushMessage(title: 'Preparing', body: 'Cooking.', orderId: 'o-5'),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Preparing: Cooking.'), findsNothing);
+
+    foreground.add(
+      const PushMessage(title: 'Preparing', body: 'Cooking.', orderId: 'o-6'),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Preparing: Cooking.'), findsOneWidget);
+  });
 }
