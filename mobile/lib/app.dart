@@ -86,7 +86,10 @@ class QuickPlateApp extends StatelessWidget {
           create: (_) => ThemeProvider(settings, initialMode: initialThemeMode),
         ),
         ChangeNotifierProvider(create: (c) => AuthProvider(c.read())),
-        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProxyProvider<AuthProvider, CartProvider>(
+          create: (_) => CartProvider(),
+          update: (_, auth, previous) => previous!..onAuthChanged(auth.user),
+        ),
         ChangeNotifierProvider(create: (c) => RestaurantsProvider(c.read())),
         ChangeNotifierProxyProvider<AuthProvider, OrdersProvider>(
           create: (c) => OrdersProvider(c.read()),
