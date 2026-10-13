@@ -62,9 +62,16 @@ jobs:
       - if: vars.API_BASE_URL != ''
         run: sed -i "s|^API_BASE_URL=.*|API_BASE_URL=${{ vars.API_BASE_URL }}|" .env
       - run: flutter pub get
-      - run: flutter build apk --release
+      # Obfuscated Dart code; the symbols needed to read crash stack traces
+      # are kept as a separate artifact.
+      - run: flutter build apk --release --obfuscate --split-debug-info=build/symbols
 
       - uses: actions/upload-artifact@v4
         with:
           name: quickplate-release-apk
           path: mobile/build/app/outputs/flutter-apk/app-release.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: quickplate-debug-symbols
+          path: mobile/build/symbols
