@@ -3,6 +3,8 @@
 [![Mobile](https://github.com/Nana-Abram/quickplate/actions/workflows/mobile.yml/badge.svg)](https://github.com/Nana-Abram/quickplate/actions/workflows/mobile.yml)
 [![Backend](https://github.com/Nana-Abram/quickplate/actions/workflows/backend.yml/badge.svg)](https://github.com/Nana-Abram/quickplate/actions/workflows/backend.yml)
 
+**[Download the Android APK (v1.0.0)](https://github.com/Nana-Abram/quickplate/releases/latest)** · API: `https://quickplate-api.onrender.com/v1`
+
 **Order waakye, jollof, banku and tilapia or fufu from restaurants in Accra and Kumasi, and watch your food move from "placed" to "delivered" in real time.** A Flutter app (Provider, go_router, Firebase) with a small Node/Express API that prices orders and simulates the restaurant and rider.
 
 <!-- Add captures to docs/screenshots/ and replace this block. Suggested: home, menu, cart, checkout map, live tracking, profile (dark). -->
@@ -164,8 +166,9 @@ Prices are never served from a cache: the API re-reads every dish when an order 
      ```
   2. Copy `mobile/android/key.properties.example` to `mobile/android/key.properties` (gitignored) and fill it in.
   3. Run `flutter build apk --release` with `API_BASE_URL` in `mobile/.env` pointing at the deployed API.
-- **Without a key:** release builds fall back to the debug key, which is what CI does.
-- **Backend on Render:** [render.yaml](render.yaml) defines the free web service. Create a Blueprint from this repo and paste the service account JSON into `FIREBASE_SERVICE_ACCOUNT_JSON`. The free tier sleeps when idle, so the first request after a while takes about 30 seconds.
+- **Without a key:** release builds fall back to the debug key, which is what CI does. Published releases are built locally with the release key.
+- **Obfuscation:** build with `flutter build apk --release --obfuscate --split-debug-info=build/symbols` and keep `build/symbols` to read crash stack traces.
+- **Backend on Render:** [render.yaml](render.yaml) defines the free web service. Create a Blueprint from this repo and paste the service account JSON into `FIREBASE_SERVICE_ACCOUNT_JSON`. The free tier sleeps when idle, so the first request after a while takes about 30 seconds. The live API runs at `https://quickplate-api.onrender.com/v1`, and CI builds use it through the `API_BASE_URL` repository variable.
 
 ## Known limitations
 
