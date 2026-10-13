@@ -48,7 +48,7 @@ Choices made where the spec was silent or ambiguous, one line each, grouped by a
 
 - Home category chips come from a constant list that matches the seeded categories, because the API has no categories endpoint.
 - The 400 ms search debounce lives in `RestaurantsProvider`, so it is unit tested. A generation counter discards responses for an older search or filter.
-- `RestaurantRepository` remembers restaurants from list pages so the detail header draws instantly; the menu is always fetched fresh.
+- `RestaurantRepository` remembers restaurants from list pages so the detail header draws instantly, and reuses a menu for 5 minutes (the last copy when offline). The server re-checks availability and prices on every order.
 - Offline, the repository returns the last unfiltered first page from memory with an "offline" strip and a retry. Searches, filters and later pages are never served stale.
 - Restaurant detail uses one tab per menu category (`NestedScrollView` + `TabBarView`) for sticky tabs, instead of one long list with scroll-synced tabs. It is simpler and keeps each tab's scroll position.
 - `Restaurant` flattens `location` into `latitude`/`longitude`; `toJson` rebuilds the API shape.
@@ -93,4 +93,15 @@ Choices made where the spec was silent or ambiguous, one line each, grouped by a
 - The home header is a deep orange gradient with soft painted circles; white text on it passes WCAG AA. An earlier kente band and kente accent colours were removed after review.
 - The home header, categories and "Top rated" carousel are slivers in the restaurant list's scroll view. They stay mounted across loading, empty and error states, so the search field keeps its text and focus.
 - "Top rated" shows the five best-rated open restaurants from the first unfiltered page and is picked once per reload, so it does not reshuffle while more pages load.
+- The API caches restaurant and menu reads in memory for 60 seconds and sends `Cache-Control: public, max-age=60`. A burst of requests for the same menu shares one Firestore read. Order creation reads prices directly, never from the cache.
 - Accessibility is checked by widget tests: tap-target size, labelled tap targets and text contrast (light and dark) on the main screens, plus layout at double text size.
+
+## Security
+
+- Clients may change only `savedAddresses` (at most 10) on their own `users/{uid}` document; push tokens are written by the API only.
+- `TRUST_PROXY_HOPS` is 0 by default and 1 on Render. Trusting a proxy that is not there would let clients pick their own IP with `X-Forwarded-For` and dodge the rate limit.
+- The demo `advance` endpoint is off in the Render blueprint; the release app never calls it.
+- Android backup and device transfer are off, because the backup would include the Firebase session.
+- The cart follows the signed-in user like orders and addresses do, so a shared phone never shows the previous user's cart.
+- Release APKs are built with `--obfuscate --split-debug-info`; the symbols are a separate CI artifact.
+- Firestore's local cache is not wiped on sign-out (that needs the Firestore instance shut down). The app only queries by the signed-in user's id, so cached documents of a previous user are never shown.
