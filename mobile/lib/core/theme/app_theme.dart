@@ -22,8 +22,13 @@ abstract final class AppTheme {
     final rounded = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(radius),
     );
+    // The standard Material sizes with Typography's colours and our font,
+    // merged the way ThemeData itself does it, so styles taken from here
+    // (such as the app bar title) have a font size.
     final text = _textTheme(
-      ThemeData(brightness: brightness, fontFamily: fontFamily).textTheme,
+      Typography.material2021().englishLike.merge(
+        ThemeData(brightness: brightness, fontFamily: fontFamily).textTheme,
+      ),
     );
 
     return ThemeData(
