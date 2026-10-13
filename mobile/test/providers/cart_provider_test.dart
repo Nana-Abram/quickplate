@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:quickplate/data/models/app_user.dart';
 import 'package:quickplate/data/models/menu_item.dart';
 import 'package:quickplate/providers/cart_provider.dart';
 
@@ -196,6 +197,42 @@ void main() {
       expect(cart.subtotalPesewas, 0);
       expect(cart.deliveryFeePesewas, 0);
       expect(cart.totalPesewas, 0);
+    });
+  });
+
+  group('session changes', () {
+    const ama = AppUser(uid: 'ama', email: 'ama@example.com');
+    const kofi = AppUser(uid: 'kofi', email: 'kofi@example.com');
+
+    void fill() =>
+        cart.addItem(restaurant: adwoa, item: jollof, notes: 'no pepper');
+
+    test('keeps the cart while the same user stays signed in', () {
+      cart.onAuthChanged(ama);
+      fill();
+
+      cart.onAuthChanged(ama);
+
+      expect(cart.itemCount, 1);
+    });
+
+    test('empties the cart on sign-out', () {
+      cart.onAuthChanged(ama);
+      fill();
+
+      cart.onAuthChanged(null);
+
+      expect(cart.isEmpty, isTrue);
+      expect(cart.restaurant, isNull);
+    });
+
+    test('never shows a cart filled by someone else', () {
+      cart.onAuthChanged(ama);
+      fill();
+
+      cart.onAuthChanged(kofi);
+
+      expect(cart.isEmpty, isTrue);
     });
   });
 }

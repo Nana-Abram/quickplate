@@ -35,6 +35,26 @@ describe('app basics', () => {
   });
 });
 
+describe('behind a proxy', () => {
+  async function secondRequestFromAnotherClient(env) {
+    const { app } = buildTestApp({ env: { RATE_LIMIT_PER_MINUTE: '1', ...env } });
+    await request(app).get('/v1/health').set('X-Forwarded-For', '203.0.113.1');
+    return request(app).get('/v1/health').set('X-Forwarded-For', '203.0.113.2');
+  }
+
+  it('rate limits each client separately when the proxy is trusted', async () => {
+    const res = await secondRequestFromAnotherClient({ TRUST_PROXY_HOPS: '1' });
+
+    expect(res.status).toBe(200);
+  });
+
+  it('ignores X-Forwarded-For when no proxy is trusted', async () => {
+    const res = await secondRequestFromAnotherClient({});
+
+    expect(res.status).toBe(429);
+  });
+});
+
 describe('loadConfig', () => {
   it('applies defaults', () => {
     const config = testConfig();

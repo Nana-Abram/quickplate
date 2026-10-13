@@ -35,7 +35,7 @@ _Demo GIF coming soon._
 | Maps | flutter_map + OpenStreetMap tiles, geolocator (no API key) |
 | UI | Material 3 light/dark theme, cached_network_image, shimmer, shared_preferences |
 | Backend | Node 22, Express 5, firebase-admin, zod validation, helmet, cors |
-| Tests | flutter_test + mocktail (188 tests), vitest + supertest (51 tests) |
+| Tests | flutter_test + mocktail (195 tests), vitest + supertest (60 tests) |
 | CI | GitHub Actions: analyze, format check, tests, release APK artifact |
 
 ## Architecture
@@ -134,6 +134,26 @@ Two concrete improvements from a rebuild audit (every widget that watched a whol
 2. **Images are decoded at the size they are drawn.** `AppNetworkImage` passes `memCacheWidth` (drawn width × device pixel ratio) to `cached_network_image`, so an 88 dp menu thumbnail decodes at about 264 px instead of the 600 × 400 source. Less memory per image and a faster first paint in long lists.
 
 To check rebuilds yourself, run `flutter run --profile` and open the Flutter DevTools Performance view with "Track widget rebuilds" on.
+
+**Caching**, from the network outwards:
+
+| Layer | What is cached | For how long |
+|---|---|---|
+| Images | Every photo, on disk (`cached_network_image`) and decoded in memory | 30 days on disk |
+| App memory | Restaurants seen in lists (for instant headers), the first page (for offline use), and menus | Menus 5 minutes, or until the app closes when offline |
+| Firestore | Live order documents and saved addresses (Firestore's offline persistence) | Until Firestore evicts them |
+| API memory | Restaurant pages, restaurants and menus | 60 seconds (`RESTAURANT_CACHE_SECONDS`) |
+| HTTP | `Cache-Control: public, max-age=60` on restaurant responses | 60 seconds |
+
+Prices are never served from a cache: the API re-reads every dish when an order is placed.
+
+## Security
+
+- **Secrets:** none in the repo or its history (checked with `git log --all -p`). The service account key, `.env` files, keystores and `key.properties` are gitignored.
+- **Firebase client keys** in `firebase_options.dart` are public by design. The data is protected by [Firestore rules](backend/firestore.rules): restaurants are read-only, users read only their own orders, and the app may change only the saved addresses on its own user document (at most 10). Push tokens and orders are written by the API alone. The rules were checked against the live project with a test user.
+- **API:** every order route checks the Firebase ID token and the order's owner. Input is validated with zod, bodies are capped at 100 kB, helmet sets security headers, and errors never include stack traces. Each client is rate limited separately, also behind Render's proxy (`TRUST_PROXY_HOPS`). The demo "advance" endpoint is off in production.
+- **App:** release builds use HTTPS only and obfuscated Dart code. The ID token is never logged (network logging exists only in debug builds and skips headers). Android backup is off, so the signed-in session is not copied to the cloud, and the cart, orders and addresses are cleared when the user changes.
+- **Dependencies:** `npm audit` reports no known vulnerabilities.
 
 ## Release build
 

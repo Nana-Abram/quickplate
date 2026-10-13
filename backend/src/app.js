@@ -19,6 +19,7 @@ export function createApp({ config, auth, services, logger = consoleLogger }) {
   const app = express();
 
   app.disable('x-powered-by');
+  if (config.trustProxyHops > 0) app.set('trust proxy', config.trustProxyHops);
   app.use(helmet());
   app.use(
     cors({ origin: config.corsOrigins.includes('*') ? '*' : config.corsOrigins }),
@@ -29,7 +30,10 @@ export function createApp({ config, auth, services, logger = consoleLogger }) {
   const v1 = express.Router();
   const authenticated = requireAuth(auth);
   v1.use(healthRouter());
-  v1.use('/restaurants', restaurantsRouter(services));
+  v1.use(
+    '/restaurants',
+    restaurantsRouter({ ...services, cacheSeconds: config.restaurantCacheSeconds }),
+  );
   v1.use(
     '/orders',
     authenticated,

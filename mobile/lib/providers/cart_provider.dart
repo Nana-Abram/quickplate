@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 
+import '../data/models/app_user.dart';
 import '../data/models/cart_item.dart';
 import '../data/models/menu_item.dart';
 import '../data/models/restaurant.dart';
@@ -26,6 +27,7 @@ class CartProvider extends ChangeNotifier {
 
   Restaurant? _restaurant;
   List<CartItem> _items = const [];
+  String? _userId;
 
   Restaurant? get restaurant => _restaurant;
   List<CartItem> get items => _items;
@@ -113,6 +115,17 @@ class CartProvider extends ChangeNotifier {
     final items = _items.where((line) => line.key != key).toList();
     if (items.length == _items.length) return;
     _update(items);
+  }
+
+  /// Called by the proxy provider whenever the session changes. A cart
+  /// (with its kitchen notes) belongs to whoever filled it, so it is
+  /// dropped when someone else signs in or the user signs out. It runs
+  /// during a build, so it must not notify.
+  void onAuthChanged(AppUser? user) {
+    if (user?.uid == _userId) return;
+    _userId = user?.uid;
+    _items = const [];
+    _restaurant = null;
   }
 
   void clear() {

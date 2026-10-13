@@ -13,11 +13,15 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      # The demo "skip a step" endpoint is only used by debug builds.
       - key: ENABLE_DEMO_ENDPOINTS
-        value: "true"
+        value: "false"
       - key: SIM_STEP_SECONDS
         value: "20"
       - key: CORS_ORIGIN
         value: "*"
+      # Render puts one proxy in front of the service.
+      - key: TRUST_PROXY_HOPS
+        value: "1"
       - key: FIREBASE_SERVICE_ACCOUNT_JSON
         sync: false

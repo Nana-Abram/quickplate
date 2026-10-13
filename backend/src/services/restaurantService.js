@@ -1,6 +1,7 @@
 import { COLLECTIONS } from '../utils/collections.js';
 import { HttpError } from '../utils/errors.js';
 import { toIsoString } from '../utils/serialize.js';
+import { createTtlCache } from '../utils/ttlCache.js';
 
 // The highest code point Firestore sorts, used as an upper bound for prefix ranges.
 const PREFIX_END = '';
@@ -35,8 +36,14 @@ function toMenuItem(doc) {
   };
 }
 
-export function createRestaurantService({ db }) {
+/**
+ * Reads are cached in memory for `cacheSeconds`, so popular pages and menus
+ * do not cost a Firestore read per request. Seeding shows up once entries
+ * expire. Orders never use this cache: prices are read fresh when ordering.
+ */
+export function createRestaurantService({ db, cacheSeconds = 0, now = Date.now }) {
   const restaurants = () => db.collection(COLLECTIONS.restaurants);
+  const cache = createTtlCache({ ttlMs: cacheSeconds * 1000, now });
 
   async function getRestaurantDoc(id) {
     const doc = await restaurants().doc(id).get();
@@ -49,7 +56,14 @@ export function createRestaurantService({ db }) {
    * case-insensitive name prefix. `cursor` is the id of the last restaurant on
    * the previous page.
    */
-  async function list({ q, category, limit, cursor }) {
+  function list(params) {
+    const { q, category, limit, cursor } = params;
+    return cache.get(`list:${JSON.stringify([q, category, limit, cursor])}`, () =>
+      listUncached({ q, category, limit, cursor }),
+    );
+  }
+
+  async function listUncached({ q, category, limit, cursor }) {
     let query = restaurants();
     if (category) {
       query = query.where('categories', 'array-contains', category);
@@ -77,12 +91,16 @@ export function createRestaurantService({ db }) {
     };
   }
 
-  async function getById(id) {
-    return toRestaurant(await getRestaurantDoc(id));
+  function getById(id) {
+    return cache.get(`restaurant:${id}`, async () => toRestaurant(await getRestaurantDoc(id)));
   }
 
   /** Returns the menu grouped by category, in the restaurant's menu order. */
-  async function getMenu(id) {
+  function getMenu(id) {
+    return cache.get(`menu:${id}`, () => getMenuUncached(id));
+  }
+
+  async function getMenuUncached(id) {
     const restaurantDoc = await getRestaurantDoc(id);
     const snapshot = await restaurantDoc.ref
       .collection(COLLECTIONS.menuItems)

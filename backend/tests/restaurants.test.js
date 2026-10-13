@@ -16,6 +16,33 @@ describe('restaurants', () => {
     await addRestaurant(db, 'chop-bar', { name: 'Chop Bar', categories: ['Local'] });
   });
 
+  describe('caching', () => {
+    it('lets clients reuse restaurant responses for a minute', async () => {
+      const res = await request(app).get('/v1/restaurants');
+
+      expect(res.headers['cache-control']).toBe('public, max-age=60');
+    });
+
+    it('serves a repeated menu read from memory', async () => {
+      await addMenuItem(db, 'akwaaba', 'jollof', { name: 'Jollof' });
+      await request(app).get('/v1/restaurants/akwaaba/menu');
+
+      await addMenuItem(db, 'akwaaba', 'waakye', { name: 'Waakye' });
+      const res = await request(app).get('/v1/restaurants/akwaaba/menu');
+
+      const names = res.body.categories.flatMap((c) => c.items.map((i) => i.name));
+      expect(names).toEqual(['Jollof']);
+    });
+
+    it('can be turned off', async () => {
+      ({ app } = buildTestApp({ env: { RESTAURANT_CACHE_SECONDS: '0' } }));
+
+      const res = await request(app).get('/v1/restaurants');
+
+      expect(res.headers['cache-control']).toBeUndefined();
+    });
+  });
+
   describe('GET /v1/restaurants', () => {
     it('lists restaurants by name with internal fields stripped', async () => {
       const res = await request(app).get('/v1/restaurants');

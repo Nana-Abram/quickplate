@@ -84,4 +84,58 @@ void main() {
 
     expect(repository.getRestaurants, throwsA(isA<NetworkException>()));
   });
+
+  group('menu cache', () {
+    late DateTime now;
+
+    setUp(() {
+      now = DateTime(2026, 10, 13, 12);
+      repository = RestaurantRepository(api, now: () => now);
+    });
+
+    final menu = [
+      menuCategory('Mains', [menuItem()]),
+    ];
+
+    test('reuses a menu fetched in the last five minutes', () async {
+      when(() => api.fetchMenu('r1')).thenAnswer((_) async => menu);
+
+      await repository.getMenu('r1');
+      now = now.add(const Duration(minutes: 4));
+      final again = await repository.getMenu('r1');
+
+      expect(again, menu);
+      verify(() => api.fetchMenu('r1')).called(1);
+    });
+
+    test('fetches again once the menu is older than five minutes', () async {
+      when(() => api.fetchMenu('r1')).thenAnswer((_) async => menu);
+
+      await repository.getMenu('r1');
+      now = now.add(const Duration(minutes: 6));
+      await repository.getMenu('r1');
+
+      verify(() => api.fetchMenu('r1')).called(2);
+    });
+
+    test('offline, an old menu is better than an error', () async {
+      when(() => api.fetchMenu('r1')).thenAnswer((_) async => menu);
+      await repository.getMenu('r1');
+      now = now.add(const Duration(hours: 1));
+
+      when(() => api.fetchMenu('r1')).thenThrow(const NetworkException());
+
+      expect(await repository.getMenu('r1'), menu);
+    });
+
+    test('other errors are not hidden by an old menu', () async {
+      when(() => api.fetchMenu('r1')).thenAnswer((_) async => menu);
+      await repository.getMenu('r1');
+      now = now.add(const Duration(hours: 1));
+
+      when(() => api.fetchMenu('r1')).thenThrow(const NotFoundException());
+
+      expect(() => repository.getMenu('r1'), throwsA(isA<NotFoundException>()));
+    });
+  });
 }
